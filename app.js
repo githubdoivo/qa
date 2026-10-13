@@ -51,6 +51,18 @@
     });
   });
 
+  $("#projects-list").innerHTML = cv.projects
+    .map((p) => `<article class="project reveal">
+        <div class="project-head">
+          <h3><a href="${esc(p.href)}" target="_blank" rel="noopener">${esc(p.name)} ↗</a></h3>
+          <span class="project-kind mono">${esc(p.kind)}</span>
+        </div>
+        <p class="blurb">${esc(p.blurb)}</p>
+        <ul class="bullets">${p.points.map((b) => `<li>${rich(b)}</li>`).join("")}</ul>
+        <div class="chips">${p.stack.map((s) => `<span class="chip">${esc(s)}</span>`).join("")}</div>
+      </article>`)
+    .join("");
+
   $("#skills-grid").innerHTML = cv.skills
     .map((g) => `<div class="skill-card reveal${g.items.length > 10 ? " wide" : ""}">
         <h3>${esc(g.group)}</h3>
@@ -177,6 +189,10 @@
       <div>
         <section><h2>Skills</h2>
           ${cv.skills.map((g) => `<div class="s-skill"><h3>${esc(g.group)}</h3><p>${g.items.map(esc).join(", ")}</p></div>`).join("")}
+        </section>
+        <section><h2>Project</h2>
+          ${cv.projects.map((p) => `<div class="s-skill"><h3><a href="${esc(p.href)}" target="_blank" rel="noopener">${esc(p.name)} ↗</a></h3>
+            <p>${esc(p.points.slice(0, 3).map(plain).join("; "))}.</p></div>`).join("")}
         </section>
       </div>
     </div>`;

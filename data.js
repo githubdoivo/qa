@@ -9,6 +9,7 @@ window.CV = {
   email: "ivolopes.engineer@gmail.com",
   links: [
     { label: "LinkedIn", href: "https://www.linkedin.com/in/ivolopesilva", text: "linkedin.com/in/ivolopesilva" },
+    { label: "GitHub", href: "https://github.com/githubdoivo", text: "github.com/githubdoivo" },
   ],
 
   tagline: "I break things on purpose, so they don't break in production.",
@@ -69,6 +70,23 @@ window.CV = {
         "Automated cross-browser and cross-device UI regression tests in Playwright and Selenium, replacing repetitive manual regression cycles",
         "Performed manual functional, regression and integration testing, and queried application databases in SQL to verify data integrity through migration and release cycles",
         "Logged and tracked defects in Jira from triage through closure, and fed UI/UX findings back to development teams to drive usability fixes",
+      ],
+    },
+  ],
+
+  projects: [
+    {
+      name: "appdoivo",
+      href: "https://github.com/githubdoivo/appdoivo",
+      kind: "Side project · PWA used by ~50 guests at a real event",
+      blurb: "A party app built and tested the way I'd want a production system to be: quality gates first, then features.",
+      stack: ["Node.js", "Playwright (WebKit)", "node:test", "GitHub Actions", "SQLite", "Fly.io", "Web Push"],
+      points: [
+        "**258 automated tests**: 137 API/logic and 104 real-browser UI tests on iPhone SE / 13 / Pro Max viewports",
+        "Pre-commit hook and **GitHub Actions** run the full suite; nothing merges red",
+        "Separate **QA environment** with a resetting database, seeded demo data and QA-only feature flags",
+        "Role-based access (owner / admin / guest), hashed and encrypted keys, rate-limited login",
+        "Diagnosed a **flaky CI suite** (parallel browsers starving a 2-core runner) and fixed it by measurement",
       ],
     },
   ],
