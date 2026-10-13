@@ -78,11 +78,12 @@ window.CV = {
     {
       name: "appdoivo",
       href: "https://github.com/githubdoivo/appdoivo",
+      demo: "https://appdoivo-demo.fly.dev",
       kind: "Side project · PWA used by ~50 guests at a real event",
       blurb: "A party app built and tested the way I'd want a production system to be: quality gates first, then features.",
       stack: ["Node.js", "Playwright (WebKit)", "node:test", "GitHub Actions", "SQLite", "Fly.io", "Web Push"],
       points: [
-        "**258 automated tests**: 137 API/logic and 104 real-browser UI tests on iPhone SE / 13 / Pro Max viewports",
+        "**263 automated tests**: API/logic, real-browser UI on iPhone SE / 13 / Pro Max viewports, and the public demo's guard rails",
         "Pre-commit hook and **GitHub Actions** run the full suite; nothing merges red",
         "Separate **QA environment** with a resetting database, seeded demo data and QA-only feature flags",
         "Role-based access (owner / admin / guest), hashed and encrypted keys, rate-limited login",

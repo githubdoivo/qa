@@ -57,6 +57,10 @@
           <h3><a href="${esc(p.href)}" target="_blank" rel="noopener">${esc(p.name)} ↗</a></h3>
           <span class="project-kind mono">${esc(p.kind)}</span>
         </div>
+        <div class="project-links">
+          <a class="btn primary" href="${esc(p.demo)}" target="_blank" rel="noopener">Try the live demo ↗</a>
+          <a class="btn" href="${esc(p.href)}" target="_blank" rel="noopener">Code on GitHub ↗</a>
+        </div>
         <p class="blurb">${esc(p.blurb)}</p>
         <ul class="bullets">${p.points.map((b) => `<li>${rich(b)}</li>`).join("")}</ul>
         <div class="chips">${p.stack.map((s) => `<span class="chip">${esc(s)}</span>`).join("")}</div>
@@ -191,7 +195,7 @@
           ${cv.skills.map((g) => `<div class="s-skill"><h3>${esc(g.group)}</h3><p>${g.items.map(esc).join(", ")}</p></div>`).join("")}
         </section>
         <section><h2>Project</h2>
-          ${cv.projects.map((p) => `<div class="s-skill"><h3><a href="${esc(p.href)}" target="_blank" rel="noopener">${esc(p.name)} ↗</a></h3>
+          ${cv.projects.map((p) => `<div class="s-skill"><h3><a href="${esc(p.href)}" target="_blank" rel="noopener">${esc(p.name)} ↗</a> · <a href="${esc(p.demo)}" target="_blank" rel="noopener">live demo ↗</a></h3>
             <p>${esc(p.points.slice(0, 3).map(plain).join("; "))}.</p></div>`).join("")}
         </section>
       </div>
