@@ -1,5 +1,7 @@
 # ivolopes.com
 
+[![CI](https://github.com/githubdoivo/ivolopes/actions/workflows/ci.yml/badge.svg)](https://github.com/githubdoivo/ivolopes/actions/workflows/ci.yml)
+
 Personal CV site: plain HTML/CSS/JS, hosted on GitHub Pages.
 
 - **Edit content in `data.js` only.** It feeds both the web view and the one-page "Paper" view.

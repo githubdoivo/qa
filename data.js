@@ -88,6 +88,7 @@ window.CV = {
       stack: ["Node.js", "Playwright (WebKit)", "node:test", "GitHub Actions", "SQLite", "Fly.io", "Web Push"],
       points: [
         "**263 automated tests**: API/logic, real-browser UI on iPhone SE / 13 / Pro Max viewports, and the public demo's guard rails",
+        "Separate **BDD end-to-end suite** (Playwright + Cucumber, TypeScript) runs daily against the live demo, with a published report",
         "Pre-commit hook and **GitHub Actions** run the full suite; nothing merges red",
         "Separate **QA environment** with a resetting database, seeded demo data and QA-only feature flags",
         "Role-based access (owner / admin / guest), hashed and encrypted keys, rate-limited login",

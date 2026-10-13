@@ -88,6 +88,7 @@ window.CV_PT = {
       stack: ["Node.js", "Playwright (WebKit)", "node:test", "GitHub Actions", "SQLite", "Fly.io", "Web Push"],
       points: [
         "**263 testes automatizados**: API/lógica, UI num browser real em ecrãs de iPhone SE / 13 / Pro Max, e as proteções da demo pública",
+        "**Suite E2E em BDD** separada (Playwright + Cucumber, TypeScript), corre todos os dias contra a demo, com relatório publicado",
         "Hook de pre-commit e **GitHub Actions** correm a suite completa; nada entra no main com testes a falhar",
         "**Ambiente de QA** separado, com base de dados que se reinicia, dados de demonstração e feature flags só de QA",
         "Acesso por perfis (owner / admin / pessoa convidada), chaves com hash e encriptadas, login com rate limiting",
