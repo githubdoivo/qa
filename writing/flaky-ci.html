@@ -79,5 +79,17 @@
     </footer>
   </main>
   <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <!-- Cloudflare Web Analytics: cookie-free visit counts. Loaded only on the
+       real domain, so test runs and Lighthouse audits (on localhost) don't
+       count as visits or depend on an outside service. -->
+  <script>
+    if (location.hostname === "ivolopes.com") {
+      var cf = document.createElement("script");
+      cf.defer = true;
+      cf.src = "https://static.cloudflareinsights.com/beacon.min.js";
+      cf.setAttribute("data-cf-beacon", '{"token": "d142aee1c9ac4e2da34679b403fb6d72"}');
+      document.head.appendChild(cf);
+    }
+  </script>
 </body>
 </html>
