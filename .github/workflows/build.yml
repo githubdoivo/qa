@@ -1,0 +1,44 @@
+name: Build PDFs and preview image
+
+# Regenerates ivo-lopes-cv.pdf, ivo-lopes-cv-pt.pdf and og-image.png from the
+# site whenever its content changes, and commits them back, so the PDFs can
+# never drift from data.js / data.pt.js. (Pushes made with GITHUB_TOKEN don't
+# trigger workflows, so this can't loop.)
+on:
+  push:
+    branches: [main]
+    paths:
+      - data.js
+      - data.pt.js
+      - app.js
+      - styles.css
+      - index.html
+      - build.mjs
+      - tools/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: build
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - name: Commit the rebuilt files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ivo-lopes-cv.pdf ivo-lopes-cv-pt.pdf og-image.png
+          if git diff --cached --quiet; then echo "Nothing changed."; exit 0; fi
+          git commit -m "Rebuild PDFs and preview image"
+          git push

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fixing a flaky CI suite · Ivo Lopes</title>
+  <meta name="description" content="How a red CI that everyone had learnt to ignore got fixed: measuring instead of assuming, and treating every flaky test as a timing assumption to find, not noise to retry.">
+  <meta property="og:title" content="Fixing a flaky CI suite · Ivo Lopes">
+  <meta property="og:description" content="Measuring instead of assuming, and treating every flaky test as a timing assumption to find, not noise to retry.">
+  <meta property="og:url" content="https://ivolopes.com/writing/flaky-ci.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://ivolopes.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://ivolopes.com/writing/flaky-ci.html">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <script>
+    try {
+      var t = localStorage.getItem("theme");
+      if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../" aria-label="Ivo Lopes, home"><span class="brand-mark">IL</span><span class="brand-path">~/ivolopes/writing</span></a>
+    <a class="link-btn mono" href="../#projects">← Back to the CV</a>
+  </header>
+
+  <main class="view article">
+    <p class="eyebrow mono">// writing · appdoivo</p>
+    <h1>Fixing a flaky CI suite</h1>
+    <p class="article-lead">A red CI that everyone has learnt to ignore is worse than having no CI at all. This is how I got one back to meaning something, on a side project with a 250-test suite, and what it taught me about flaky tests in general.</p>
+
+    <h2>The setup</h2>
+    <p>appdoivo is a mobile web app I built for a real event of about 50 people. Its suite has two halves: API and logic tests, and a real-browser UI suite that drives the app with Playwright's WebKit engine (the same engine as iOS Safari) on iPhone SE, 13 and Pro Max screen sizes. A pre-commit hook and GitHub Actions run the whole suite, and a red check means a branch does not merge.</p>
+
+    <h2>Symptom: half the UI suite failing, every run</h2>
+    <p>One day, roughly half of the UI tests started failing on CI, on <code>main</code> too. Locally, everything passed. The failures were not even consistent: a different test dropped out of nearly every run, and each one passed when run alone. For a whole day, nobody read past the red cross, which is exactly how a CI stops protecting anything.</p>
+
+    <h2>Cause: two browsers starving a two-core runner</h2>
+    <p>Node's test runner runs test files in parallel by default. On a developer machine that is fine. On a two-core GitHub runner, it meant the API suite and the WebKit UI suite fought over the same CPU, and the browser was starved badly enough that the login step timed out even with a generous 25-second allowance.</p>
+    <p>The first fix pinned CI to one test file at a time and kept local runs parallel, on the reasonable-sounding argument that a laptop has cores to spare and parallel would take half as long.</p>
+
+    <h2>Measure, don't assume</h2>
+    <p>That argument did not survive a measurement. With the suite at 206 tests: <strong>116 seconds serial against 120 seconds parallel</strong>, on a developer machine with other work running. Two browser matrices contending for the same cores cost more than they saved, and the parallel runs were the ones producing intermittent failures.</p>
+    <p>So serial became the rule everywhere, through a small wrapper script behind <code>npm test</code>, so that CI and every laptop run the suite the same way. Serial was not the careful-but-slow option. It was simply the faster one, and the honest one.</p>
+
+    <h2>The rest of the flakes: the test was wrong, not the app</h2>
+    <p>Fixing the load exposed a handful of intermittent failures that had been hiding in the noise. Every one of them turned out to be a timing assumption inside the test:</p>
+    <ul>
+      <li><strong>Measuring too early.</strong> A test opened a row and measured an element's width in the same tick. On a loaded run that caught the layout at zero. It now waits for the element to be laid out.</li>
+      <li><strong>Clicking a node that no longer exists.</strong> A list re-rendered while it loaded, so a one-shot click could land on an element that had just been replaced, and the click was silently lost. A Playwright locator, which re-resolves on every attempt, fixed it.</li>
+      <li><strong>A timeout that wasn't.</strong> One wait passed its options where Playwright expects a function argument, so it had quietly been using the default 30 seconds instead of the suite's own value.</li>
+      <li><strong>Reading a colour mid-animation.</strong> Months later, the first CI run on the public repo failed one test out of 258: on a slower runner, a button label read <code>rgba(231, 231, 231, 0.976)</code> instead of white, because the light/dark fade had not finished. The fix waits for running animations to settle before comparing colours.</li>
+    </ul>
+    <p>None of these was fixed with a retry. A retry would have turned each one into a test that passes for the wrong reason.</p>
+
+    <h2>What I took from it</h2>
+    <ul>
+      <li><strong>A flaky test is a bug with a cause.</strong> It depends on some timing or resource the test never stated. Find it and make the test state it.</li>
+      <li><strong>Measure before choosing a trade-off.</strong> "Parallel is faster" is usually true and was false here.</li>
+      <li><strong>Protect the meaning of red.</strong> A pipeline people have learnt to ignore costs more than it saves. Getting it back to trustworthy was worth more than any single feature that week.</li>
+      <li><strong>Write the reason down next to the fix.</strong> The wrapper script carries the measurement in a comment, so nobody has to rediscover why the suite runs serially.</li>
+    </ul>
+
+    <p class="article-links">
+      <a class="btn primary" href="https://github.com/githubdoivo/appdoivo" target="_blank" rel="noopener">appdoivo on GitHub ↗</a>
+      <a class="btn" href="https://github.com/githubdoivo/appdoivo/blob/main/scripts/run-tests.js" target="_blank" rel="noopener">The test runner and its notes ↗</a>
+      <a class="btn" href="../">Back to the CV</a>
+    </p>
+
+    <footer class="footer mono">
+      <span>© <span id="year">2026</span> Ivo Lopes</span>
+      <a class="checks-link" href="mailto:mail@ivolopes.com">mail@ivolopes.com</a>
+    </footer>
+  </main>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

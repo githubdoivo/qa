@@ -1,11 +1,39 @@
 (function () {
-  const cv = window.CV;
+  // Language: ?lang= in the link, then the visitor's last choice, then the
+  // browser's own language. Switching reloads with ?lang=, so a link can
+  // also point straight at either version.
+  const params = new URLSearchParams(location.search);
+  let saved = null;
+  try { saved = localStorage.getItem("lang"); } catch (_) {}
+  const wanted = params.get("lang") || saved || ((navigator.language || "").toLowerCase().startsWith("pt") ? "pt" : "en");
+  const cv = wanted === "pt" && window.CV_PT ? window.CV_PT : window.CV;
+  const ui = cv.ui;
+  if (params.get("lang")) { try { localStorage.setItem("lang", cv.lang); } catch (_) {} }
+  document.documentElement.lang = cv.lang;
+  document.title = ui.pageTitle;
   const $ = (s, el = document) => el.querySelector(s);
   const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   // Escape, then turn **bold** into <strong>.
   const rich = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   const plain = (s) => s.replace(/\*\*/g, "");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Interface text ---------- */
+  document.querySelectorAll("[data-ui]").forEach((el) => { el.textContent = ui[el.dataset.ui]; });
+  document.querySelectorAll("[data-ui-label]").forEach((el) => {
+    el.setAttribute("aria-label", ui[el.dataset.uiLabel]);
+    el.setAttribute("title", ui[el.dataset.uiLabel]);
+  });
+  const langBtn = $("#lang-toggle");
+  langBtn.textContent = ui.switchLang;
+  langBtn.addEventListener("click", () => {
+    const next = cv.lang === "pt" ? "en" : "pt";
+    try { localStorage.setItem("lang", next); } catch (_) {}
+    location.href = `${location.pathname}?lang=${next}${location.hash}`;
+  });
+  const pdf = $("#pdf-download");
+  pdf.href = ui.pdfFile;
+  pdf.setAttribute("download", ui.pdfName);
 
   /* ---------- Web view ---------- */
   $("#hero-eyebrow").textContent = `// ${cv.location}`;
@@ -22,19 +50,19 @@
 
   $("#timeline").innerHTML = cv.experience
     .map((j, i) => {
-      const current = j.end === "Present";
+      const current = j.end === ui.present;
       const long = j.bullets.length > 5;
       return `<li class="job reveal">
         <div class="job-meta">
           <div class="when">${esc(j.start)} → ${esc(j.end)}</div>
           <div>${esc(j.location)}</div>
-          ${current ? '<span class="badge">● current</span>' : ""}
+          ${current ? `<span class="badge">● ${esc(ui.current)}</span>` : ""}
         </div>
         <div>
           <h3>${esc(j.role)} <span class="company">@ ${esc(j.company)}</span></h3>
           <p class="blurb">${esc(j.blurb)}</p>
           <ul class="bullets${long ? " collapsed" : ""}" id="b${i}">${j.bullets.map((b) => `<li>${rich(b)}</li>`).join("")}</ul>
-          ${long ? `<button class="more" aria-controls="b${i}" aria-expanded="false">+ ${j.bullets.length - 4} more</button>` : ""}
+          ${long ? `<button class="more" aria-controls="b${i}" aria-expanded="false">${esc(ui.more(j.bullets.length - 4))}</button>` : ""}
           <div class="chips">${j.stack.map((s) => `<span class="chip">${esc(s)}</span>`).join("")}</div>
         </div>
       </li>`;
@@ -47,7 +75,7 @@
       const list = document.getElementById(btn.getAttribute("aria-controls"));
       const open = list.classList.toggle("collapsed") === false;
       btn.setAttribute("aria-expanded", open);
-      btn.textContent = open ? "− show less" : label;
+      btn.textContent = open ? ui.less : label;
     });
   });
 
@@ -58,12 +86,14 @@
           <span class="project-kind mono">${esc(p.kind)}</span>
         </div>
         <div class="project-links">
-          <a class="btn primary" href="${esc(p.demo)}" target="_blank" rel="noopener">Try the live demo ↗</a>
-          <a class="btn" href="${esc(p.href)}" target="_blank" rel="noopener">Code on GitHub ↗</a>
+          <a class="btn primary" href="${esc(p.demo)}" target="_blank" rel="noopener">${esc(ui.tryDemo)}</a>
+          <a class="btn" href="${esc(p.tests)}" target="_blank" rel="noopener">${esc(ui.tests)}</a>
+          <a class="btn" href="${esc(p.href)}" target="_blank" rel="noopener">${esc(ui.code)}</a>
         </div>
         <p class="blurb">${esc(p.blurb)}</p>
         <ul class="bullets">${p.points.map((b) => `<li>${rich(b)}</li>`).join("")}</ul>
         <div class="chips">${p.stack.map((s) => `<span class="chip">${esc(s)}</span>`).join("")}</div>
+        <a class="story-link" href="${esc(p.story)}">${esc(ui.readStory)}</a>
       </article>`)
     .join("");
 
@@ -77,22 +107,22 @@
   $("#cta-email").href = `mailto:${cv.email}`;
   $("#contact-links").innerHTML =
     `<a class="btn primary" href="mailto:${esc(cv.email)}">${esc(cv.email)}</a>
-     <button class="btn" id="copy-email" type="button">Copy email</button>` +
+     <button class="btn" id="copy-email" type="button">${esc(ui.copyEmail)}</button>` +
     cv.links.map((l) => `<a class="btn" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("");
 
   $("#copy-email").addEventListener("click", async (e) => {
     try {
       await navigator.clipboard.writeText(cv.email);
-      e.target.textContent = "Copied ✓";
+      e.target.textContent = ui.copied;
       e.target.classList.add("copied");
-      setTimeout(() => { e.target.textContent = "Copy email"; e.target.classList.remove("copied"); }, 1800);
+      setTimeout(() => { e.target.textContent = ui.copyEmail; e.target.classList.remove("copied"); }, 1800);
     } catch (_) {}
   });
 
   /* ---------- Clock ---------- */
   const clock = $("#clock");
   const tick = () => {
-    clock.textContent = new Intl.DateTimeFormat("en-GB", {
+    clock.textContent = new Intl.DateTimeFormat(cv.lang === "pt" ? "pt-PT" : "en-GB", {
       hour: "2-digit", minute: "2-digit", timeZone: cv.timezone, timeZoneName: "short",
     }).format(new Date());
   };
@@ -108,21 +138,21 @@
   async function run() {
     const id = ++runId;
     const alive = () => id === runId;
-    state.textContent = "● RUNNING";
+    state.textContent = ui.running;
     state.classList.remove("pass");
     const lines = [
       `<span class="c">$</span> npx playwright test <span class="k">ivo-lopes.spec.ts</span>`,
       ``,
-      `<span class="c">Running ${cv.checks.length} tests using 3 workers</span>`,
+      `<span class="c">${esc(ui.runningTests(cv.checks.length))}</span>`,
       ``,
     ];
     const render = (cursor) => { body.innerHTML = lines.map((l) => (l.startsWith('<span class="t"') ? l : l + "\n")).join("") + (cursor ? '<span class="cursor"></span>' : ""); };
 
     if (reduceMotion) {
       cv.checks.forEach(([k, v]) => lines.push(`<span class="t"><span class="ok">✓</span> <span class="k">${esc(k)}</span> › ${esc(v)}</span>`));
-      lines.push("", `  <span class="ok b">${cv.checks.length} passed</span> <span class="c">(4.2s)</span>`);
+      lines.push("", `  <span class="ok b">${esc(ui.passedCount(cv.checks.length))}</span> <span class="c">(4.2s)</span>`);
       render(false);
-      state.textContent = "✓ PASSED";
+      state.textContent = ui.passed;
       state.classList.add("pass");
       return;
     }
@@ -136,7 +166,7 @@
       body.innerHTML = `<span class="c">$</span> ${raw.slice(0, i)}<span class="cursor"></span>`;
       await sleep(28);
     }
-    lines.push(cmd, "", `<span class="c">Running ${cv.checks.length} tests using 3 workers</span>`, "");
+    lines.push(cmd, "", `<span class="c">${esc(ui.runningTests(cv.checks.length))}</span>`, "");
     render(true);
     await sleep(450);
 
@@ -151,9 +181,9 @@
     }
     if (!alive()) return;
     await sleep(300);
-    lines.push("", `  <span class="ok b">${cv.checks.length} passed</span> <span class="c">(4.2s)</span>`);
+    lines.push("", `  <span class="ok b">${esc(ui.passedCount(cv.checks.length))}</span> <span class="c">(4.2s)</span>`);
     render(true);
-    state.textContent = "✓ PASSED";
+    state.textContent = ui.passed;
     state.classList.add("pass");
   }
   $("#term-replay").addEventListener("click", run);
@@ -170,18 +200,26 @@
   }
 
   /* ---------- Paper (one-page) view ---------- */
+  // Drawn icons rather than symbol characters, so the PDF looks the same
+  // whatever fonts the machine building it has.
+  const svg = (d) => `<svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const ICON = {
+    mail: svg('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'),
+    link: svg('<path d="M7 17 17 7"/><path d="M8 7h9v9"/>'),
+    pin: svg('<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'),
+  };
   $("#sheet").innerHTML = `
     <h1>${esc(cv.name)}</h1>
     <div class="s-title">${esc(cv.title)}</div>
     <div class="s-contact">
-      <a href="mailto:${esc(cv.email)}">✉ ${esc(cv.email)}</a>
-      ${cv.links.map((l) => `<a href="${esc(l.href)}" target="_blank" rel="noopener">↗ ${esc(l.text)}</a>`).join("")}
-      <span>⌖ ${esc(cv.location)}</span>
+      <a href="mailto:${esc(cv.email)}">${ICON.mail}${esc(cv.email)}</a>
+      ${cv.links.map((l) => `<a href="${esc(l.href)}" target="_blank" rel="noopener">${ICON.link}${esc(l.text)}</a>`).join("")}
+      <span>${ICON.pin}${esc(cv.location)}</span>
     </div>
     <div class="s-cols">
       <div>
-        <section><h2>Summary</h2><p>${esc(plain(cv.summary))}</p></section>
-        <section><h2>Experience</h2>
+        <section><h2>${esc(ui.sSummary)}</h2><p>${esc(plain(cv.summary))}</p></section>
+        <section><h2>${esc(ui.sExperience)}</h2>
           ${cv.experience.map((j) => `<div class="s-job">
             <div class="s-role">${esc(j.role)}</div>
             <div class="s-company">${esc(j.company)}</div>
@@ -191,11 +229,11 @@
         </section>
       </div>
       <div>
-        <section><h2>Skills</h2>
+        <section><h2>${esc(ui.sSkills)}</h2>
           ${cv.skills.map((g) => `<div class="s-skill"><h3>${esc(g.group)}</h3><p>${g.items.map(esc).join(", ")}</p></div>`).join("")}
         </section>
-        <section><h2>Project</h2>
-          ${cv.projects.map((p) => `<div class="s-skill"><h3><a href="${esc(p.href)}" target="_blank" rel="noopener">${esc(p.name)} ↗</a> · <a href="${esc(p.demo)}" target="_blank" rel="noopener">live demo ↗</a></h3>
+        <section><h2>${esc(ui.sProject)}</h2>
+          ${cv.projects.map((p) => `<div class="s-skill"><h3><a href="${esc(p.href)}" target="_blank" rel="noopener">${esc(p.name)} ↗</a> · <a href="${esc(p.demo)}" target="_blank" rel="noopener">${esc(ui.liveDemo)} ↗</a></h3>
             <p>${esc(p.points.slice(0, 3).map(plain).join("; "))}.</p></div>`).join("")}
         </section>
       </div>

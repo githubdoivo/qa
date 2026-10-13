@@ -1,6 +1,8 @@
-// Single source of truth for the CV. Edit this file to update both the
-// web view and the one-page paper view.
+// Single source of truth for the CV in English. Edit this file to update both
+// the web view and the one-page paper view; data.pt.js holds the same content
+// in Portuguese and must be kept in step with it.
 window.CV = {
+  lang: "en",
   name: "Ivo Lopes",
   title: "QA Automation Engineer",
   location: "Porto, Portugal",
@@ -79,6 +81,8 @@ window.CV = {
       name: "appdoivo",
       href: "https://github.com/githubdoivo/appdoivo",
       demo: "https://appdoivo-demo.fly.dev",
+      tests: "https://github.com/githubdoivo/appdoivo-e2e",
+      story: "writing/flaky-ci.html",
       kind: "Side project · PWA used by ~50 guests at a real event",
       blurb: "A party app built and tested the way I'd want a production system to be: quality gates first, then features.",
       stack: ["Node.js", "Playwright (WebKit)", "node:test", "GitHub Actions", "SQLite", "Fly.io", "Web Push"],
@@ -103,4 +107,26 @@ window.CV = {
     { group: "Cloud", items: ["AWS", "Azure", "Oracle Cloud"] },
     { group: "Methodologies", items: ["Agile/Scrum", "Behaviour-Driven Development (BDD)", "Test Strategy", "AI-Assisted Testing", "Team Onboarding & Enablement"] },
   ],
+
+  // Interface text (headings, buttons, labels).
+  ui: {
+    pageTitle: "Ivo Lopes · QA Automation Engineer",
+    present: "Present",
+    current: "current",
+    more: (n) => `+ ${n} more`,
+    less: "− show less",
+    about: "About", experience: "Experience", projects: "Projects", toolkit: "Toolkit", contact: "Contact",
+    getInTouch: "Get in touch", viewPaper: "View one-page CV",
+    contactLead: "Looking for someone to own quality end to end? Let's talk.",
+    copyEmail: "Copy email", copied: "Copied ✓",
+    tryDemo: "Try the live demo ↗", code: "Code on GitHub ↗", tests: "E2E tests (Playwright + Cucumber) ↗", readStory: "Read: fixing a flaky CI suite →",
+    liveDemo: "live demo",
+    footerChecks: "All checks passed ✓",
+    web: "Web", paper: "Paper", page: "Page 1 / 1", back: "← Back to website", download: "Download PDF",
+    pdfFile: "ivo-lopes-cv.pdf", pdfName: "Ivo Lopes CV.pdf",
+    sSummary: "Summary", sExperience: "Experience", sSkills: "Skills", sProject: "Project",
+    running: "● RUNNING", passed: "✓ PASSED", runningTests: (n) => `Running ${n} tests using 3 workers`, passedCount: (n) => `${n} passed`,
+    switchLang: "PT", switchLangLabel: "Ver em português",
+    themeLabel: "Toggle dark or light theme",
+  },
 };
