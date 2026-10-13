@@ -1,0 +1,11 @@
+{
+  "name": "ivolopes-cv",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "pdf": "node build-pdf.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.0"
+  }
+}
