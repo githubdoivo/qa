@@ -6,7 +6,7 @@ window.CV = {
   location: "Porto, Portugal",
   coords: "41.15°N 8.61°W",
   timezone: "Europe/Lisbon",
-  email: "ivolopes.engineer@gmail.com",
+  email: "mail@ivolopes.com",
   links: [
     { label: "LinkedIn", href: "https://www.linkedin.com/in/ivolopesilva", text: "linkedin.com/in/ivolopesilva" },
     { label: "GitHub", href: "https://github.com/githubdoivo", text: "github.com/githubdoivo" },
