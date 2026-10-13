@@ -239,9 +239,27 @@
       </div>
     </div>`;
 
-  // Scale the A4 sheet down to fit narrow screens.
+  // Keep the sheet to one page wherever it renders. Text comes out wider on
+  // some systems (Linux, where the PDF is built) and the CV grows over time,
+  // so if it runs past the bottom, step the size down until it fits - never
+  // below a size that stays comfortable to read.
   const wrap = $("#sheet-wrap");
   const sheet = $("#sheet");
+  const BASE_PT = 8.4;
+  const MIN_PT = 7.4;
+  function fitText() {
+    if ($("#paper").hidden) return;
+    let size = BASE_PT;
+    sheet.style.fontSize = `${size}pt`;
+    while (sheet.scrollHeight > sheet.clientHeight && size > MIN_PT) {
+      size = Math.round((size - 0.1) * 10) / 10;
+      sheet.style.fontSize = `${size}pt`;
+    }
+    sheet.dataset.fitted = String(size);
+  }
+  if (document.fonts) document.fonts.ready.then(() => { fitText(); fitSheet(); });
+
+  // Scale the A4 sheet down to fit narrow screens.
   function fitSheet() {
     sheet.style.transform = "";
     wrap.style.height = "";
@@ -261,7 +279,7 @@
     $("#web").hidden = paper;
     $("#paper").hidden = !paper;
     document.querySelectorAll(".seg [data-view]").forEach((b) => b.setAttribute("aria-selected", b.dataset.view === view));
-    if (paper) fitSheet();
+    if (paper) { fitText(); fitSheet(); }
     if (push) history.replaceState(null, "", paper ? "#cv" : location.pathname);
     window.scrollTo(0, 0);
   }

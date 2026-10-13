@@ -32,6 +32,9 @@ for (const [lang, file] of [["en", "ivo-lopes-cv.pdf"], ["pt", "ivo-lopes-cv-pt.
   const page = await browser.newPage();
   await page.goto(`${base}/?lang=${lang}#cv`, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
+  // The sheet re-fits its text once the fonts are in (see fitText in app.js).
+  await page.waitForFunction(() => document.querySelector("#sheet")?.dataset.fitted);
+  await page.waitForTimeout(200);
   await page.pdf({ path: join(root, file), format: "A4", printBackground: true, pageRanges: "1", preferCSSPageSize: true });
   await page.close();
   console.log(`Wrote ${file}`);

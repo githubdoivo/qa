@@ -33,8 +33,11 @@ for (const { lang, about, pdf, summary } of LANGS) {
       await expect(page.locator("#paper")).toBeVisible();
       await expect(page.locator("#sheet h2").first()).toHaveText(summary);
       await page.evaluate(() => document.fonts.ready);
-      const { scroll, client } = await page.locator("#sheet").evaluate((s) => ({ scroll: s.scrollHeight, client: s.clientHeight }));
-      expect(scroll, "the CV runs past the bottom of the page").toBeLessThanOrEqual(client);
+      await expect(page.locator("#sheet")).toHaveAttribute("data-fitted", /\d/);
+      const { scroll, client, size } = await page.locator("#sheet").evaluate((s) => ({ scroll: s.scrollHeight, client: s.clientHeight, size: parseFloat(s.dataset.fitted) }));
+      expect(scroll, "the CV runs past the bottom of the page even at the smallest text size").toBeLessThanOrEqual(client);
+      // Shrinking to fit is a safety net, not a licence to keep adding text.
+      expect(size, "the text had to shrink to its minimum to fit - time to trim the CV").toBeGreaterThan(7.4);
     });
 
     test("the download button serves this language's PDF", async ({ page, request }) => {
