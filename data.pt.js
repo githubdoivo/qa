@@ -80,7 +80,7 @@ window.CV_PT = {
     {
       name: "appdoivo",
       href: "https://github.com/githubdoivo/appdoivo",
-      demo: "https://appdoivo-demo.fly.dev",
+      demo: "https://demo.appdoivo.com",
       tests: "https://github.com/githubdoivo/appdoivo-e2e",
       story: "writing/flaky-ci.html",
       kind: "Projeto pessoal · PWA usada por ~50 pessoas num evento real",
