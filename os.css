@@ -28,6 +28,12 @@ a { color: var(--link); }
 h1, h2, h3, p { margin: 0; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 1px dotted #000; outline-offset: 1px; }
+
+/* Old-style pixel cursors (drawn for this site): arrow, hand on things you
+   can press, and an arrow with an hourglass while the tests run. */
+html { cursor: url(os/cursors/arrow.svg) 0 0, default; }
+a, button, summary, .desk-icon, label { cursor: url(os/cursors/hand.svg) 7 0, pointer !important; }
+body.busy, body.busy .window { cursor: url(os/cursors/busy.svg) 0 0, progress; }
 .mono { font-family: var(--mono); }
 .muted { color: var(--muted); }
 [hidden] { display: none !important; }
@@ -61,9 +67,10 @@ button { font: inherit; color: inherit; }
   margin: 0 auto; background: var(--face); border: 3px solid var(--title-b); border-top: 0; border-radius: 8px 8px 0 0;
   box-shadow: 2px 4px 14px rgba(0,0,0,.45); overflow: hidden;
 }
-.window.maximized { position: fixed; inset: 0 0 var(--taskbar-h) 0; width: auto; height: auto; border-radius: 0; z-index: 5; }
+.window.maximized { position: fixed !important; inset: 0 0 var(--taskbar-h) 0 !important; width: auto !important; height: auto !important; margin: 0 !important; border-radius: 0; z-index: 50 !important; }
 .window.minimized { display: none; }
 .titlebar {
+  touch-action: none;
   display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 4px 0 8px; flex: none;
   background: linear-gradient(var(--title-a), var(--title-b) 18%, var(--title-b) 70%, var(--title-c));
   color: #fff; border-radius: 6px 6px 0 0; user-select: none;
@@ -237,6 +244,31 @@ a.company:hover { text-decoration: underline; }
 @keyframes blink { 50% { opacity: .3; } }
 @media (prefers-reduced-motion: reduce) { .led.running { animation: none; } .bar { transition: none; } }
 
+/* Document window (the flaky-CI write-up) */
+.docwin { position: fixed; left: 170px; top: 40px; width: min(780px, calc(100vw - 200px)); height: calc(100vh - var(--taskbar-h) - 70px); z-index: 7; }
+.docwin.minimized { display: none; }
+.doc-tools .tool { grid-auto-flow: column; gap: 6px; align-items: center; }
+.ruler {
+  height: 18px; flex: none; border-bottom: 1px solid var(--edge); background-color: var(--face);
+  background-image: repeating-linear-gradient(90deg, #555 0 1px, transparent 1px 48px), repeating-linear-gradient(90deg, #999 0 1px, transparent 1px 12px);
+  background-size: 100% 7px, 100% 4px; background-position: 40px bottom, 40px bottom; background-repeat: no-repeat;
+}
+.doc-scroll { flex: 1; min-height: 0; overflow-y: auto; background: #8f8f8f; padding: 18px; outline: none; }
+.doc-page {
+  max-width: 660px; margin: 0 auto; background: #fff; padding: 44px 56px; box-shadow: 2px 2px 0 #4a4a4a;
+  font: 15px/1.6 "Times New Roman", Times, Georgia, serif; color: #000;
+}
+.doc-page h1 { font: bold 24px/1.25 Arial, "Helvetica Neue", sans-serif; margin-bottom: 12px; }
+.doc-page h2 { font: bold 17px Arial, "Helvetica Neue", sans-serif; margin: 22px 0 6px; }
+.doc-page p, .doc-page ul, .doc-page ol { margin: 0 0 10px; }
+.doc-page code { font: 13px var(--mono); }
+.doc-page .article-lead { font-style: italic; }
+
+/* Selecting icons on the desktop */
+.lasso { position: fixed; z-index: 60; pointer-events: none; border: 1px dotted #0b2a7a; background: rgba(49, 106, 197, .28); }
+.desk-icon.selected img { filter: drop-shadow(1px 2px 1px rgba(0,0,0,.35)) brightness(.75) sepia(1) hue-rotate(185deg) saturate(3); }
+.desk-icon.selected span { background: #316ac5; text-shadow: none; outline: 1px dotted #fff; }
+
 /* About dialog */
 .dialog-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; background: rgba(0,0,0,.18); padding: 16px; }
 .dialog { width: min(420px, 100%); height: auto; border-radius: 8px 8px 0 0; }
@@ -327,6 +359,7 @@ a.company:hover { text-decoration: underline; }
   .listview, .props { width: calc(100% - 24px); }
   .statusbar { position: sticky; bottom: 0; background: var(--face); }
   .taskbar { display: none; }
+  .docwin { display: none !important; }
   .download .btn { width: 100%; justify-content: center; }
 }
 

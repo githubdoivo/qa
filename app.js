@@ -84,7 +84,7 @@
           <a class="btn" href="${esc(p.tests)}" target="_blank" rel="noopener"><img src="os/icons/doc-checklist.png" alt="">${esc(ui.tests)}</a>
           <a class="btn" href="${esc(p.href)}" target="_blank" rel="noopener"><img src="os/icons/code.png" alt="">${esc(ui.code)}</a>
         </div>
-        <p class="story"><img src="os/icons/bug.png" alt=""><a href="${esc(p.story)}">${esc(ui.readStory)}</a></p>
+        <p class="story"><img src="os/icons/doc-edit.png" alt=""><a href="${esc(p.story)}" data-doc>${esc(ui.readStory)}</a></p>
       </article>`)
     .join("");
 
@@ -155,6 +155,7 @@
   }
   function finish(stopped) {
     clearInterval(timer);
+    document.body.classList.remove("busy");
     $("#win").classList.toggle("passed", !stopped);
     led.className = `led ${stopped ? "stopped" : "pass"}`;
     sbState.textContent = stopped ? ui.stoppedStatus : ui.ready;
@@ -168,6 +169,7 @@
     $("#win").classList.remove("passed");
     setProgress(0);
     led.className = "led running";
+    document.body.classList.add("busy");
     sbState.textContent = ui.runningStatus;
     const t0 = Date.now();
     clearInterval(timer);
@@ -217,7 +219,7 @@
   $("#tb-min").addEventListener("click", () => setMinimized(true));
   $("#tb-close").addEventListener("click", () => setMinimized(true));
   $("#tb-max").addEventListener("click", () => win.classList.toggle("maximized"));
-  $(".titlebar").addEventListener("dblclick", () => win.classList.toggle("maximized"));
+  win.querySelector(".titlebar").addEventListener("dblclick", (e) => { if (!e.target.closest("button")) win.classList.toggle("maximized"); });
   task.addEventListener("click", () => setMinimized(!win.classList.contains("minimized")));
   document.querySelectorAll('a[href="#win"]').forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); setMinimized(false); }));
   $("#tb-menu").addEventListener("click", () => {
@@ -234,6 +236,107 @@
   }));
   // On a phone the window is one long column: start with the long panels folded.
   if (window.matchMedia("(max-width: 760px)").matches) ["#projects", "#skills", "#education"].forEach((s) => ($(s).open = false));
+
+  /* ---------- Desktop: stacking, dragging, the document window, selection box ---------- */
+  const desktopMode = () => window.matchMedia("(min-width: 761px) and (pointer: fine)").matches;
+  let topZ = 6;
+  const raise = (w) => { w.style.zIndex = String(++topZ); };
+  document.querySelectorAll("#web .window:not(.dialog)").forEach((w) => w.addEventListener("pointerdown", () => raise(w)));
+
+  // Drag a window by its title bar, like the real thing.
+  function draggable(w) {
+    const bar = w.querySelector(".titlebar");
+    bar.addEventListener("pointerdown", (e) => {
+      if (!desktopMode() || e.button !== 0 || e.target.closest("button") || w.classList.contains("maximized")) return;
+      const r = w.getBoundingClientRect();
+      Object.assign(w.style, { position: "fixed", left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px`, margin: "0" });
+      const dx = e.clientX - r.left, dy = e.clientY - r.top;
+      bar.setPointerCapture(e.pointerId);
+      const move = (ev) => {
+        const x = Math.min(Math.max(ev.clientX - dx, -r.width + 80), innerWidth - 80);
+        const y = Math.min(Math.max(ev.clientY - dy, 0), innerHeight - 80);
+        w.style.left = `${x}px`; w.style.top = `${y}px`;
+      };
+      const up = () => { bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", up); };
+      bar.addEventListener("pointermove", move);
+      bar.addEventListener("pointerup", up);
+    });
+  }
+  draggable(win);
+
+  // The flaky-CI write-up opens as a document on the desktop.
+  const doc = $("#doc-win");
+  const taskDoc = $("#task-doc");
+  draggable(doc);
+  let docLoaded = false;
+  async function loadDoc() {
+    if (docLoaded) return;
+    $("#doc-status").textContent = ui.loading;
+    const html = await (await fetch("writing/flaky-ci.html")).text();
+    const article = new DOMParser().parseFromString(html, "text/html").querySelector("main.article");
+    article.querySelectorAll(".eyebrow, .article-links, .footer").forEach((n) => n.remove());
+    article.querySelectorAll("a[href]").forEach((a) => { a.target = "_blank"; a.rel = "noopener"; });
+    $("#doc-page").replaceChildren(...article.childNodes);
+    const words = $("#doc-page").textContent.trim().split(/\s+/).length;
+    $("#doc-status").textContent = ui.words(words);
+    docLoaded = true;
+  }
+  function openDoc() {
+    doc.hidden = false;
+    doc.classList.remove("minimized");
+    taskDoc.hidden = false;
+    taskDoc.setAttribute("aria-pressed", "true");
+    raise(doc);
+    doc.querySelector(".doc-scroll").focus({ preventScroll: true });
+    loadDoc().catch(() => { location.href = "writing/flaky-ci.html"; });
+  }
+  document.querySelectorAll("a[data-doc]").forEach((a) => a.addEventListener("click", (e) => {
+    if (!desktopMode()) return; // on a phone, just open the page
+    e.preventDefault();
+    closeDialogs();
+    openDoc();
+  }));
+  doc.querySelector("[data-doc-close]").addEventListener("click", () => { doc.hidden = true; taskDoc.hidden = true; });
+  doc.querySelector("[data-doc-min]").addEventListener("click", () => { doc.classList.add("minimized"); taskDoc.setAttribute("aria-pressed", "false"); });
+  doc.querySelector("[data-doc-max]").addEventListener("click", () => doc.classList.toggle("maximized"));
+  taskDoc.addEventListener("click", () => {
+    const min = !doc.classList.contains("minimized");
+    doc.classList.toggle("minimized", min);
+    taskDoc.setAttribute("aria-pressed", String(!min));
+    if (!min) raise(doc);
+  });
+
+  // Drag on the empty desktop to draw a selection box; icons inside it light up.
+  const desk = $("#web");
+  const icons = [...document.querySelectorAll(".desk-icon")];
+  let lasso = null;
+  desk.addEventListener("pointerdown", (e) => {
+    if (e.pointerType !== "mouse" || e.button !== 0 || !desktopMode()) return;
+    if (e.target !== desk && !e.target.classList.contains("desk-icons")) {
+      if (!e.target.closest(".desk-icon")) icons.forEach((i) => i.classList.remove("selected"));
+      return;
+    }
+    e.preventDefault();
+    icons.forEach((i) => i.classList.remove("selected"));
+    const x0 = e.clientX, y0 = e.clientY;
+    lasso = document.createElement("div");
+    lasso.className = "lasso";
+    document.body.append(lasso);
+    desk.setPointerCapture(e.pointerId);
+    const move = (ev) => {
+      const l = Math.min(x0, ev.clientX), t = Math.min(y0, ev.clientY);
+      const r = Math.max(x0, ev.clientX), b = Math.max(y0, ev.clientY);
+      Object.assign(lasso.style, { left: `${l}px`, top: `${t}px`, width: `${r - l}px`, height: `${b - t}px` });
+      icons.forEach((i) => {
+        const ir = i.getBoundingClientRect();
+        i.classList.toggle("selected", ir.left < r && ir.right > l && ir.top < b && ir.bottom > t);
+      });
+    };
+    const up = () => { lasso?.remove(); lasso = null; desk.removeEventListener("pointermove", move); desk.removeEventListener("pointerup", up); };
+    desk.addEventListener("pointermove", move);
+    desk.addEventListener("pointerup", up);
+  });
+  icons.forEach((i) => i.addEventListener("click", () => { icons.forEach((o) => o.classList.toggle("selected", o === i)); }));
 
   /* ---------- Dialogs: About and the Recycle Bin ---------- */
   let lastFocus = null;

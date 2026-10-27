@@ -166,8 +166,9 @@ window.CV = {
     statusPassed: (n, m) => `${n}/${m} tests passed`,
     aboutTitle: "About Test Runner", ok: "OK",
     aboutText: "A CV that runs its own tests. Built by hand in HTML, CSS and JavaScript, and checked on every push by Playwright tests and Lighthouse.",
-    storyFile: "flaky-ci.txt", bin: "Recycle Bin", binEmpty: "The Recycle Bin is empty.",
+    storyFile: "flaky-ci.doc", bin: "Recycle Bin", binEmpty: "The Recycle Bin is empty.",
     binText: "Every bug found here was fixed before it reached production.",
+    openWeb: "Open as web page", words: (n) => `${n} words`, loading: "Opening…",
     themeLabel: "Toggle dark or light theme",
   },
 };

@@ -9,7 +9,7 @@
   <meta property="og:description" content="I break things on purpose, so they don't break in production.">
   <meta property="og:url" content="https://qa.ivolopes.com">
   <meta property="og:type" content="profile">
-  <meta property="og:image" content="https://qa.ivolopes.com/og-image.png?v=3">
+  <meta property="og:image" content="https://qa.ivolopes.com/og-image.png?v=4">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Ivo Lopes, Senior QA Engineer: a passing test run summary">
@@ -37,7 +37,7 @@
     <nav class="desk-icons" aria-label="Desktop">
       <a class="desk-icon" href="#win" id="desk-cv"><img src="os/icons/computer.png" alt=""><span data-ui="myCV">My CV</span></a>
       <a class="desk-icon" href="https://demo.appdoivo.com" target="_blank" rel="noopener"><img src="os/icons/package.png" alt=""><span>appdoivo</span></a>
-      <a class="desk-icon" href="writing/flaky-ci.html"><img src="os/icons/doc-search.png" alt=""><span data-ui="storyFile">flaky-ci.txt</span></a>
+      <a class="desk-icon" href="writing/flaky-ci.html" data-doc><img src="os/icons/doc-edit.png" alt=""><span data-ui="storyFile">flaky-ci.doc</span></a>
       <button class="desk-icon" type="button" id="desk-bin"><img src="os/icons/recycle.png" alt=""><span data-ui="bin">Recycle Bin</span></button>
     </nav>
 
@@ -139,6 +139,26 @@
       </footer>
     </section>
 
+    <!-- A document window for the flaky-CI write-up, filled from writing/flaky-ci.html -->
+    <section class="window docwin" id="doc-win" aria-labelledby="doc-title" hidden>
+      <header class="titlebar">
+        <img src="os/icons/doc-edit.png" alt="" class="tb-icon">
+        <span class="tb-title" id="doc-title"><span data-ui="storyFile">flaky-ci.doc</span> - Writer</span>
+        <div class="tb-btns">
+          <button class="tb-btn tb-min" type="button" data-doc-min data-ui-label="minimize"><span></span></button>
+          <button class="tb-btn tb-max" type="button" data-doc-max data-ui-label="maximize"><span></span></button>
+          <button class="tb-btn tb-close" type="button" data-doc-close data-ui-label="close"><span></span></button>
+        </div>
+      </header>
+      <div class="toolbar doc-tools">
+        <a class="tool" href="writing/flaky-ci.html" target="_blank" rel="noopener"><img src="os/icons/globe.png" alt=""><span data-ui="openWeb">Open as web page</span></a>
+        <a class="tool" href="https://github.com/githubdoivo/appdoivo" target="_blank" rel="noopener"><img src="os/icons/code.png" alt=""><span data-ui="code">Code on GitHub</span></a>
+      </div>
+      <div class="ruler" aria-hidden="true"></div>
+      <div class="doc-scroll" tabindex="0"><article class="doc-page" id="doc-page"></article></div>
+      <footer class="statusbar"><span class="sb-cell sb-grow" id="doc-status"></span></footer>
+    </section>
+
     <div class="dialog-backdrop" id="about-dialog" hidden>
       <div class="window dialog" role="dialog" aria-modal="true" aria-labelledby="about-head">
         <header class="titlebar"><img src="os/icons/info.png" alt="" class="tb-icon"><span class="tb-title" id="about-head" data-ui="aboutTitle">About</span>
@@ -148,7 +168,7 @@
           <div>
             <p><strong data-ui="winTitle">Ivo Lopes - Test Runner</strong></p>
             <p data-ui="aboutText"></p>
-            <p><a href="writing/flaky-ci.html" data-ui="readStory"></a></p>
+            <p><a href="writing/flaky-ci.html" data-doc data-ui="readStory"></a></p>
           </div>
         </div>
         <div class="dialog-actions"><button class="btn" type="button" data-close data-ui="ok">OK</button></div>
@@ -168,8 +188,9 @@
     </div>
 
     <footer class="taskbar">
-      <span class="start" aria-hidden="true"><img src="os/icons/computer.png" alt=""></span>
+      <span class="start" aria-hidden="true"><img src="os/icons/bug.png" alt=""></span>
       <button class="task" id="task" type="button" aria-pressed="true"><img src="os/icons/computer.png" alt=""><span data-ui="winTitle">Ivo Lopes - Test Runner</span></button>
+      <button class="task" id="task-doc" type="button" aria-pressed="true" hidden><img src="os/icons/doc-edit.png" alt=""><span data-ui="storyFile">flaky-ci.doc</span></button>
       <div class="tray">
         <span class="clock" id="clock"></span>
       </div>

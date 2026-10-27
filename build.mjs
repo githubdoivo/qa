@@ -2,7 +2,8 @@
 //   ivo-lopes-cv.pdf, ivo-lopes-cv-pt.pdf - the paper view in each language,
 //     through Chrome's print engine, so the text stays selectable for ATS
 //     tools and the links stay clickable
-//   og-image.png - the link preview image (tools/og-card.html, 1200x630)
+//   og-image.png - the link preview image: the real page at 1200x630, with
+//     the test run already finished, so it always matches the site
 //
 //   npm install && npm run build
 //
@@ -40,9 +41,12 @@ for (const [lang, file] of [["en", "ivo-lopes-cv.pdf"], ["pt", "ivo-lopes-cv-pt.
   console.log(`Wrote ${file}`);
 }
 
-const og = await browser.newPage({ viewport: { width: 1200, height: 630 } });
-await og.goto(`${base}/tools/og-card.html`, { waitUntil: "networkidle" });
+const og = await browser.newPage({ viewport: { width: 1200, height: 630 }, reducedMotion: "reduce" });
+await og.goto(`${base}/?lang=en`, { waitUntil: "networkidle" });
 await og.evaluate(() => document.fonts.ready);
+await og.waitForSelector("#win.passed");
+// A fixed clock, so the image only changes when the page does.
+await og.evaluate(() => { document.querySelector("#clock").textContent = "10:24"; });
 await og.screenshot({ path: join(root, "og-image.png") });
 console.log("Wrote og-image.png");
 

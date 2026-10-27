@@ -172,6 +172,29 @@ test("the Recycle Bin opens and closes", async ({ page, isMobile }) => {
   await expect(page.getByRole("dialog")).toBeHidden();
 });
 
+test("the write-up opens as a document window on the desktop", async ({ page, isMobile }) => {
+  test.skip(isMobile, "on a phone the link opens the page itself");
+  await page.goto("/?lang=en");
+  await page.locator(".desk-icon[data-doc]").click();
+  await expect(page.locator("#doc-page h1")).toHaveText("Fixing a flaky CI suite");
+  await expect(page.locator("#doc-status")).toContainText("words");
+  await expect(page.locator("#task-doc")).toBeVisible();
+  await page.locator("#doc-win [data-doc-close]").click();
+  await expect(page.locator("#doc-win")).toBeHidden();
+});
+
+test("dragging on the desktop selects the icons inside the box", async ({ page, isMobile }) => {
+  test.skip(isMobile, "no desktop on a phone");
+  await page.goto("/?lang=en");
+  await page.mouse.move(4, 40);
+  await page.mouse.down();
+  await page.mouse.move(110, 200, { steps: 8 });
+  await expect(page.locator(".lasso")).toBeVisible();
+  await page.mouse.up();
+  await expect(page.locator(".lasso")).toHaveCount(0);
+  expect(await page.locator(".desk-icon.selected").count()).toBeGreaterThanOrEqual(2);
+});
+
 test("nothing scrolls sideways on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 780 });
   for (const path of ["/?lang=en", "/?lang=pt", "/writing/flaky-ci.html"]) {

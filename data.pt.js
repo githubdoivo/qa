@@ -165,8 +165,9 @@ window.CV_PT = {
     statusPassed: (n, m) => `${n}/${m} testes passaram`,
     aboutTitle: "Acerca do Test Runner", ok: "OK",
     aboutText: "Um CV que corre os próprios testes. Feito à mão em HTML, CSS e JavaScript, e verificado a cada push com testes Playwright e Lighthouse.",
-    storyFile: "flaky-ci.txt", bin: "Reciclagem", binEmpty: "A Reciclagem está vazia.",
+    storyFile: "flaky-ci.doc", bin: "Reciclagem", binEmpty: "A Reciclagem está vazia.",
     binText: "Todos os bugs encontrados aqui foram corrigidos antes de chegarem a produção.",
+    openWeb: "Abrir como página web", words: (n) => `${n} palavras`, loading: "A abrir…",
     themeLabel: "Alternar tema claro ou escuro",
   },
 };
