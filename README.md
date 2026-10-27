@@ -13,3 +13,4 @@ Personal CV site: plain HTML/CSS/JS, hosted on GitHub Pages.
 - Shortcuts: `T` theme, `P` web/paper, `R` re-run the test animation.
 - `qa.ivolopes.com/#cv` opens straight into the paper view.
 - Served at `qa.ivolopes.com` (`CNAME`, plus a CNAME record in Cloudflare). It deliberately links to no other area of ivolopes.com; the hub at ivolopes.com links to it.
+- **After changing CSS or JS,** bump the `?v=` stamp on the `<link>`/`<script>` tags in `index.html`, so browsers fetch the new files straight away (GitHub Pages lets them keep old ones for 10 minutes).

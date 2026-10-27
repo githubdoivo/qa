@@ -238,7 +238,8 @@
   if (window.matchMedia("(max-width: 760px)").matches) ["#projects", "#skills", "#education"].forEach((s) => ($(s).open = false));
 
   /* ---------- Desktop: stacking, dragging, the document window, selection box ---------- */
-  const desktopMode = () => window.matchMedia("(min-width: 761px) and (pointer: fine)").matches;
+  // Any mouse or trackpad counts, even on touchscreen laptops that report touch as their main pointer.
+  const desktopMode = () => window.matchMedia("(min-width: 761px) and (any-pointer: fine)").matches;
   let topZ = 6;
   const raise = (w) => { w.style.zIndex = String(++topZ); };
   document.querySelectorAll("#web .window:not(.dialog)").forEach((w) => w.addEventListener("pointerdown", () => raise(w)));
@@ -311,7 +312,7 @@
   const icons = [...document.querySelectorAll(".desk-icon")];
   let lasso = null;
   desk.addEventListener("pointerdown", (e) => {
-    if (e.pointerType !== "mouse" || e.button !== 0 || !desktopMode()) return;
+    if (e.pointerType === "touch" || e.button !== 0 || !desktopMode()) return;
     if (e.target !== desk && !e.target.classList.contains("desk-icons")) {
       if (!e.target.closest(".desk-icon")) icons.forEach((i) => i.classList.remove("selected"));
       return;
