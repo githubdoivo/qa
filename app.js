@@ -24,51 +24,44 @@
     el.setAttribute("aria-label", ui[el.dataset.uiLabel]);
     el.setAttribute("title", ui[el.dataset.uiLabel]);
   });
-  const langBtn = $("#lang-toggle");
-  langBtn.textContent = ui.switchLang;
-  langBtn.addEventListener("click", () => {
+  document.querySelectorAll("[data-lang]").forEach((b) => b.addEventListener("click", () => {
     const next = cv.lang === "pt" ? "en" : "pt";
     try { localStorage.setItem("lang", next); } catch (_) {}
     location.href = `${location.pathname}?lang=${next}${location.hash}`;
-  });
+  }));
+  $("#lang-toggle").setAttribute("aria-label", ui.switchLangLabel);
+  $("#lang-toggle").title = ui.switchLangLabel;
+  document.querySelectorAll(".pdf-link").forEach((a) => { a.href = ui.pdfFile; a.setAttribute("download", ui.pdfName); });
   const pdf = $("#pdf-download");
   pdf.href = ui.pdfFile;
   pdf.setAttribute("download", ui.pdfName);
+  document.querySelectorAll('a[href^="mailto:"]').forEach((a) => (a.href = `mailto:${cv.email}`));
 
-  /* ---------- Web view ---------- */
-  $("#hero-eyebrow").textContent = `// ${cv.location}`;
+  /* ---------- Window content ---------- */
   $("#hero-name").textContent = cv.name;
   $("#hero-role").textContent = cv.title;
+  $("#hero-where").textContent = cv.location;
   $("#hero-tagline").textContent = cv.tagline;
   $("#summary").innerHTML = rich(cv.summary);
-  $("#where").textContent = `${cv.location} · ${cv.coords}`;
+  $("#where").textContent = cv.location;
   $("#year").textContent = new Date().getFullYear();
 
-  $("#metrics").innerHTML = cv.metrics
-    .map((m) => `<div class="metric"><b>${esc(m.value)}</b><span>${esc(m.label)}</span></div>`)
-    .join("");
-
+  const SHOWN = 4;
   $("#timeline").innerHTML = cv.experience
     .map((j, i) => {
-      const current = j.end === ui.present;
-      const long = j.bullets.length > 5;
-      return `<li class="job reveal">
-        <div class="job-meta">
-          <div class="when">${esc(j.start)} → ${esc(j.end)}</div>
-          <div>${esc(j.location)}</div>
-          ${current ? `<span class="badge">● ${esc(ui.current)}</span>` : ""}
+      const long = j.bullets.length > SHOWN + 1;
+      return `<article class="job">
+        <div class="job-head">
+          <h3><span class="company">${esc(j.company)}</span><span class="role">${esc(j.role)}</span></h3>
+          <span class="when">${esc(j.start)} – ${esc(j.end)}</span>
         </div>
-        <div>
-          <h3>${esc(j.role)} <span class="company">@ ${esc(j.company)}</span></h3>
-          <p class="blurb">${esc(j.blurb)}</p>
-          <ul class="bullets${long ? " collapsed" : ""}" id="b${i}">${j.bullets.map((b) => `<li>${rich(b)}</li>`).join("")}</ul>
-          ${long ? `<button class="more" aria-controls="b${i}" aria-expanded="false">${esc(ui.more(j.bullets.length - 4))}</button>` : ""}
-          <div class="chips">${j.stack.map((s) => `<span class="chip">${esc(s)}</span>`).join("")}</div>
-        </div>
-      </li>`;
+        <p class="muted">${esc(j.location)} · ${esc(j.blurb)}</p>
+        <ul class="bullets${long ? " collapsed" : ""}" id="b${i}">${j.bullets.map((b) => `<li>${rich(b)}</li>`).join("")}</ul>
+        ${long ? `<button class="more" type="button" aria-controls="b${i}" aria-expanded="false">${esc(ui.more(j.bullets.length - SHOWN))}</button>` : ""}
+        <div class="tags">${j.stack.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+      </article>`;
     })
     .join("");
-
   document.querySelectorAll(".more").forEach((btn) => {
     const label = btn.textContent;
     btn.addEventListener("click", () => {
@@ -80,140 +73,207 @@
   });
 
   $("#projects-list").innerHTML = cv.projects
-    .map((p) => `<article class="project reveal">
-        <div class="project-head">
-          <h3><a href="${esc(p.href)}" target="_blank" rel="noopener">${esc(p.name)} ↗</a></h3>
-          <span class="project-kind mono">${esc(p.kind)}</span>
+    .map((p) => `<article class="project">
+        <div class="job-head">
+          <h3><a class="company" href="${esc(p.href)}" target="_blank" rel="noopener">${esc(p.name)}</a></h3>
+          <span class="when">${esc(p.kind)}</span>
         </div>
-        <div class="project-links">
-          <a class="btn primary" href="${esc(p.demo)}" target="_blank" rel="noopener">${esc(ui.tryDemo)}</a>
-          <a class="btn" href="${esc(p.tests)}" target="_blank" rel="noopener">${esc(ui.tests)}</a>
-          <a class="btn" href="${esc(p.href)}" target="_blank" rel="noopener">${esc(ui.code)}</a>
-        </div>
-        <p class="blurb">${esc(p.blurb)}</p>
+        <p class="muted">${esc(p.blurb)}</p>
         <ul class="bullets">${p.points.map((b) => `<li>${rich(b)}</li>`).join("")}</ul>
-        <div class="chips">${p.stack.map((s) => `<span class="chip">${esc(s)}</span>`).join("")}</div>
-        <a class="story-link" href="${esc(p.story)}">${esc(ui.readStory)}</a>
+        <div class="tags">${p.stack.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+        <div class="btn-row">
+          <a class="btn" href="${esc(p.demo)}" target="_blank" rel="noopener"><img src="os/icons/globe.png" alt="">${esc(ui.tryDemo)}</a>
+          <a class="btn" href="${esc(p.tests)}" target="_blank" rel="noopener"><img src="os/icons/doc-checklist.png" alt="">${esc(ui.tests)}</a>
+          <a class="btn" href="${esc(p.href)}" target="_blank" rel="noopener"><img src="os/icons/code.png" alt="">${esc(ui.code)}</a>
+        </div>
+        <p class="story"><img src="os/icons/bug.png" alt=""><a href="${esc(p.story)}">${esc(ui.readStory)}</a></p>
       </article>`)
     .join("");
 
-  $("#skills-grid").innerHTML = cv.skills
-    .map((g) => `<div class="skill-card reveal${g.items.length > 10 ? " wide" : ""}">
-        <h3>${esc(g.group)}</h3>
-        <div class="chips" style="margin-top:0">${g.items.map((s) => `<span class="chip">${esc(s)}</span>`).join("")}</div>
-      </div>`)
-    .join("");
+  $("#skills-grid").innerHTML = `<tbody>${cv.skills
+    .map((g) => `<tr class="skill-row"><th scope="row">${esc(g.group)}</th><td>${g.items.map(esc).join(", ")}</td></tr>`)
+    .join("")}</tbody>`;
 
   $("#edu-grid").innerHTML =
-    cv.education.map((e) => `<div class="skill-card reveal">
-        <h3>${esc(ui.sEducation)}</h3>
-        <p class="edu-degree">${esc(e.degree)}</p>
-        <p class="edu-meta">${esc(e.school)}, ${esc(e.location)} · ${esc(e.year)}</p>
-        <p class="edu-meta">${esc(e.note)}</p>
-      </div>`).join("") +
-    `<div class="skill-card reveal">
-        <h3>${esc(ui.sLanguages)}</h3>
-        <ul class="edu-list">${cv.languages.map((l) => `<li><span>${esc(l.name)}</span><span class="edu-meta">${esc(l.level)}</span></li>`).join("")}</ul>
-      </div>
-      <div class="skill-card reveal wide">
-        <h3>${esc(ui.sCertifications)}</h3>
-        <ul class="edu-list">${cv.certifications.map((c) => `<li><span>${esc(c.name)}</span><span class="edu-meta">${esc(c.year)}</span></li>`).join("")}</ul>
-      </div>`;
+    `<div class="edu-col">
+      <h3>${esc(ui.sEducation)}</h3>
+      ${cv.education.map((e) => `<div class="edu-item"><img src="os/icons/star.png" alt=""><div><strong>${esc(e.degree)}</strong><br>${esc(e.school)}, ${esc(e.location)} · ${esc(e.year)}<br><span class="muted">${esc(e.note)}</span></div></div>`).join("")}
+      <h3>${esc(ui.sLanguages)}</h3>
+      <table class="listview compact"><tbody>${cv.languages.map((l) => `<tr><td>${esc(l.name)}</td><td class="muted">${esc(l.level)}</td></tr>`).join("")}</tbody></table>
+    </div>
+    <div class="edu-col">
+      <h3>${esc(ui.sCertifications)}</h3>
+      <table class="listview compact"><tbody>${cv.certifications.map((c) => `<tr><td><img src="os/icons/ok.png" alt="" class="row-icon">${esc(c.name)}</td><td class="muted num">${esc(c.year)}</td></tr>`).join("")}</tbody></table>
+    </div>`;
 
-  $("#cta-email").href = `mailto:${cv.email}`;
   $("#contact-links").innerHTML =
-    `<a class="btn primary" href="mailto:${esc(cv.email)}">${esc(cv.email)}</a>
+    `<a class="btn" href="mailto:${esc(cv.email)}"><img src="os/icons/mail.png" alt="">${esc(cv.email)}</a>
      <button class="btn" id="copy-email" type="button">${esc(ui.copyEmail)}</button>` +
-    cv.links.map((l) => `<a class="btn" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("");
-
+    cv.links.map((l) => `<a class="btn" href="${esc(l.href)}" target="_blank" rel="noopener"><img src="os/icons/${l.label === "GitHub" ? "code" : "team"}.png" alt="">${esc(l.label)}</a>`).join("");
   $("#copy-email").addEventListener("click", async (e) => {
+    const b = e.currentTarget;
     try {
       await navigator.clipboard.writeText(cv.email);
-      e.target.textContent = ui.copied;
-      e.target.classList.add("copied");
-      setTimeout(() => { e.target.textContent = ui.copyEmail; e.target.classList.remove("copied"); }, 1800);
+      b.textContent = ui.copied;
+      setTimeout(() => { b.textContent = ui.copyEmail; }, 1800);
     } catch (_) {}
   });
 
-  /* ---------- Clock ---------- */
+  /* ---------- Clock (Porto time, like a taskbar clock) ---------- */
   const clock = $("#clock");
   const tick = () => {
-    clock.textContent = new Intl.DateTimeFormat(cv.lang === "pt" ? "pt-PT" : "en-GB", {
-      hour: "2-digit", minute: "2-digit", timeZone: cv.timezone, timeZoneName: "short",
-    }).format(new Date());
+    clock.textContent = new Intl.DateTimeFormat(cv.lang === "pt" ? "pt-PT" : "en-GB", { hour: "2-digit", minute: "2-digit", timeZone: cv.timezone }).format(new Date());
   };
   tick();
-  setInterval(tick, 30000);
+  setInterval(tick, 15000);
 
-  /* ---------- Terminal test run ---------- */
-  const body = $("#term-body");
-  const state = $("#term-state");
-  let runId = 0;
+  /* ---------- The test run ---------- */
+  const rows = $("#tests-body");
+  rows.innerHTML = cv.checks
+    .map(([k, v]) => `<tr><td><span class="check"></span>${esc(k)}</td><td>${esc(v)}</td><td class="status">${esc(ui.rowPending)}</td></tr>`)
+    .join("");
+  const bar = $("#bar");
+  const progress = bar.parentElement;
+  const pct = $("#pct");
+  const sbState = $("#sb-state");
+  const sbCount = $("#sb-count");
+  const sbTime = $("#sb-time");
+  const led = $("#led");
+  const total = cv.checks.length;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  let runId = 0;
+  let timer = 0;
+
+  function setProgress(done) {
+    const p = Math.round((done / total) * 100);
+    bar.style.width = `${p}%`;
+    pct.textContent = `${p}%`;
+    progress.setAttribute("aria-valuenow", p);
+    sbCount.textContent = ui.statusPassed(done, total);
+  }
+  function setRow(tr, state) {
+    tr.className = state;
+    tr.querySelector(".status").textContent = ui[{ pending: "rowPending", running: "rowRunning", passed: "rowPassed", stopped: "rowStopped" }[state]];
+  }
+  function finish(stopped) {
+    clearInterval(timer);
+    $("#win").classList.toggle("passed", !stopped);
+    led.className = `led ${stopped ? "stopped" : "pass"}`;
+    sbState.textContent = stopped ? ui.stoppedStatus : ui.ready;
+  }
 
   async function run() {
     const id = ++runId;
     const alive = () => id === runId;
-    state.textContent = ui.running;
-    state.classList.remove("pass");
-    const lines = [
-      `<span class="c">$</span> npx playwright test <span class="k">ivo-lopes.spec.ts</span>`,
-      ``,
-      `<span class="c">${esc(ui.runningTests(cv.checks.length))}</span>`,
-      ``,
-    ];
-    const render = (cursor) => { body.innerHTML = lines.map((l) => (l.startsWith('<span class="t"') ? l : l + "\n")).join("") + (cursor ? '<span class="cursor"></span>' : ""); };
-
+    const trs = [...rows.children];
+    trs.forEach((tr) => setRow(tr, "pending"));
+    $("#win").classList.remove("passed");
+    setProgress(0);
+    led.className = "led running";
+    sbState.textContent = ui.runningStatus;
+    const t0 = Date.now();
+    clearInterval(timer);
+    const showTime = () => {
+      const s = Math.floor((Date.now() - t0) / 1000);
+      sbTime.textContent = `00:${String(s).padStart(2, "0")}`;
+    };
+    showTime();
+    timer = setInterval(showTime, 250);
     if (reduceMotion) {
-      cv.checks.forEach(([k, v]) => lines.push(`<span class="t"><span class="ok">✓</span> <span class="k">${esc(k)}</span> › ${esc(v)}</span>`));
-      lines.push("", `  <span class="ok b">${esc(ui.passedCount(cv.checks.length))}</span> <span class="c">(4.2s)</span>`);
-      render(false);
-      state.textContent = ui.passed;
-      state.classList.add("pass");
-      return;
+      trs.forEach((tr) => setRow(tr, "passed"));
+      setProgress(total);
+      return finish(false);
     }
-
-    // Type the command.
-    const cmd = lines[0];
-    lines.length = 0;
-    const raw = "npx playwright test ivo-lopes.spec.ts";
-    for (let i = 0; i <= raw.length; i++) {
+    await sleep(400);
+    for (let i = 0; i < trs.length; i++) {
       if (!alive()) return;
-      body.innerHTML = `<span class="c">$</span> ${raw.slice(0, i)}<span class="cursor"></span>`;
-      await sleep(28);
-    }
-    lines.push(cmd, "", `<span class="c">${esc(ui.runningTests(cv.checks.length))}</span>`, "");
-    render(true);
-    await sleep(450);
-
-    for (const [k, v] of cv.checks) {
+      setRow(trs[i], "running");
+      await sleep(350 + Math.random() * 350);
       if (!alive()) return;
-      lines.push(`<span class="t"><span class="c">◌</span> <span class="k">${esc(k)}</span> › ${esc(v)}</span>`);
-      render(true);
-      await sleep(320 + Math.random() * 280);
-      const ms = (0.3 + Math.random() * 1.4).toFixed(1);
-      lines[lines.length - 1] = `<span class="t"><span class="ok">✓</span> <span class="k">${esc(k)}</span> › ${esc(v)} <span class="c">(${ms}s)</span></span>`;
-      render(true);
+      setRow(trs[i], "passed");
+      setProgress(i + 1);
     }
-    if (!alive()) return;
-    await sleep(300);
-    lines.push("", `  <span class="ok b">${esc(ui.passedCount(cv.checks.length))}</span> <span class="c">(4.2s)</span>`);
-    render(true);
-    state.textContent = ui.passed;
-    state.classList.add("pass");
+    if (alive()) finish(false);
   }
-  $("#term-replay").addEventListener("click", run);
+  function stop() {
+    if (!$("#win").classList.contains("passed") && led.classList.contains("running")) {
+      runId++;
+      [...rows.children].forEach((tr) => { if (!tr.classList.contains("passed")) setRow(tr, "stopped"); });
+      finish(true);
+    }
+  }
+  document.querySelectorAll("[data-run]").forEach((b) => b.addEventListener("click", run));
+  document.querySelectorAll("[data-stop]").forEach((b) => b.addEventListener("click", stop));
   run();
 
-  /* ---------- Reveal on scroll ---------- */
-  if ("IntersectionObserver" in window && !reduceMotion) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
-    }, { rootMargin: "0px 0px -8% 0px" });
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-  } else {
-    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+  /* ---------- Menus (menu bar and start menu) ---------- */
+  const closeMenus = (except) => {
+    document.querySelectorAll(".menu > button[aria-expanded='true']").forEach((b) => {
+      if (b === except) return;
+      b.setAttribute("aria-expanded", "false");
+      b.nextElementSibling.hidden = true;
+    });
+    if (except !== $("#start")) { $("#start").setAttribute("aria-expanded", "false"); $("#start-menu").hidden = true; }
+  };
+  document.querySelectorAll(".menu > button").forEach((b) => b.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = b.getAttribute("aria-expanded") !== "true";
+    closeMenus(b);
+    b.setAttribute("aria-expanded", String(open));
+    b.nextElementSibling.hidden = !open;
+    if (open) b.nextElementSibling.querySelector("[role=menuitem]")?.focus();
+  }));
+  // Hovering across an open menu bar switches menus, like the real thing.
+  document.querySelectorAll(".menu > button").forEach((b) => b.addEventListener("mouseenter", () => {
+    if ($(".menu > button[aria-expanded='true']") && b.getAttribute("aria-expanded") !== "true") b.click();
+  }));
+  $("#start").addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = $("#start-menu").hidden;
+    closeMenus($("#start"));
+    $("#start-menu").hidden = !open;
+    $("#start").setAttribute("aria-expanded", String(open));
+  });
+  document.addEventListener("click", () => closeMenus());
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeMenus(); closeAbout(); } });
+
+  /* ---------- Window buttons, taskbar and side menu ---------- */
+  const win = $("#win");
+  const task = $("#task");
+  function setMinimized(min) {
+    win.classList.toggle("minimized", min);
+    task.setAttribute("aria-pressed", String(!min));
+    if (!min) $("#content").focus({ preventScroll: true });
   }
+  $("#tb-min").addEventListener("click", () => setMinimized(true));
+  $("#tb-close").addEventListener("click", () => setMinimized(true));
+  $("#tb-max").addEventListener("click", () => win.classList.toggle("maximized"));
+  $(".titlebar").addEventListener("dblclick", () => win.classList.toggle("maximized"));
+  task.addEventListener("click", () => setMinimized(!win.classList.contains("minimized")));
+  document.querySelectorAll('a[href="#win"]').forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); setMinimized(false); closeMenus(); }));
+  $("#tb-menu").addEventListener("click", () => {
+    const open = !win.classList.contains("side-open");
+    win.classList.toggle("side-open", open);
+    $("#tb-menu").setAttribute("aria-expanded", String(open));
+  });
+  // Section links open the panel they point at (panels can be collapsed).
+  document.querySelectorAll('.side a[href^="#"]').forEach((a) => a.addEventListener("click", () => {
+    const target = document.querySelector(a.getAttribute("href"));
+    if (target && target.tagName === "DETAILS") target.open = true;
+    win.classList.remove("side-open");
+    $("#tb-menu").setAttribute("aria-expanded", "false");
+  }));
+  // On a phone the window is one long column: start with the long panels folded.
+  if (window.matchMedia("(max-width: 760px)").matches) ["#projects", "#skills", "#education"].forEach((s) => ($(s).open = false));
+
+  /* ---------- About dialog ---------- */
+  const about = $("#about-dialog");
+  let lastFocus = null;
+  function openAbout() { closeMenus(); lastFocus = document.activeElement; about.hidden = false; about.querySelector(".dialog-actions .btn").focus(); }
+  function closeAbout() { if (about.hidden) return; about.hidden = true; lastFocus?.focus(); }
+  document.querySelectorAll("[data-about]").forEach((b) => b.addEventListener("click", openAbout));
+  about.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", closeAbout));
+  about.addEventListener("click", (e) => { if (e.target === about) closeAbout(); });
 
   /* ---------- Paper (printable, two-page) view ---------- */
   // Drawn icons rather than symbol characters, so the PDF looks the same
@@ -315,9 +375,9 @@
   /* ---------- View switching ---------- */
   function setView(view, push) {
     const paper = view === "paper";
+    closeMenus();
     $("#web").hidden = paper;
     $("#paper").hidden = !paper;
-    document.querySelectorAll(".seg [data-view]").forEach((b) => b.setAttribute("aria-selected", b.dataset.view === view));
     if (paper) { fitText(); fitSheet(); }
     if (push) history.replaceState(null, "", paper ? "#cv" : location.pathname);
     window.scrollTo(0, 0);
@@ -325,23 +385,11 @@
   document.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => setView(b.dataset.view, true)));
   if (location.hash === "#cv") setView("paper", false);
 
-  /* ---------- Theme ---------- */
-  const root = document.documentElement;
-  const isDark = () =>
-    root.dataset.theme ? root.dataset.theme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
-  function toggleTheme() {
-    const next = isDark() ? "light" : "dark";
-    root.dataset.theme = next;
-    try { localStorage.setItem("theme", next); } catch (_) {}
-  }
-  $("#theme-toggle").addEventListener("click", toggleTheme);
-
   /* ---------- Keyboard shortcuts ---------- */
   document.addEventListener("keydown", (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey || /input|textarea/i.test(e.target.tagName)) return;
     const k = e.key.toLowerCase();
-    if (k === "t") toggleTheme();
-    else if (k === "p") setView($("#paper").hidden ? "paper" : "web", true);
+    if (k === "p") setView($("#paper").hidden ? "paper" : "web", true);
     else if (k === "r" && $("#paper").hidden) run();
   });
 })();

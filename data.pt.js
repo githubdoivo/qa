@@ -149,6 +149,18 @@ window.CV_PT = {
     sEducation: "Formação", sLanguages: "Línguas", sCertifications: "Certificações",
     running: "● A CORRER", passed: "✓ PASSOU", runningTests: (n) => `A correr ${n} testes com 3 workers`, passedCount: (n) => `${n} passaram`,
     switchLang: "EN", switchLangLabel: "View in English",
+    // O ambiente de trabalho "Test Runner" (vista web).
+    myCV: "CV", printable: "CV para imprimir", otherLang: "English", winTitle: "Ivo Lopes - Test Runner",
+    menuLabel: "Secções", minimize: "Minimizar", maximize: "Maximizar", close: "Fechar", startLabel: "Menu iniciar",
+    mFile: "Ficheiro", mView: "Ver", mRun: "Executar", mHelp: "Ajuda",
+    downloadPdf: "Descarregar CV (PDF)", downloadShort: "Descarregar CV", runAll: "Executar tudo", stop: "Parar", about: "Acerca de",
+    report: "Relatório", export: "Exportar", help: "Ajuda", eduShort: "Formação",
+    testResults: "Resultados dos testes", colTest: "Teste", colDetails: "Detalhes", colStatus: "Estado",
+    rowPending: "PENDENTE", rowRunning: "A CORRER", rowPassed: "PASSOU", rowStopped: "PARADO",
+    ready: "Pronto", runningStatus: "A executar testes…", stoppedStatus: "Parado. Carregar em Executar tudo para repetir.",
+    statusPassed: (n, m) => `${n}/${m} testes passaram`,
+    aboutTitle: "Acerca do Test Runner", ok: "OK",
+    aboutText: "Um CV que corre os próprios testes. Feito à mão em HTML, CSS e JavaScript, e verificado a cada push com testes Playwright e Lighthouse.",
     themeLabel: "Alternar tema claro ou escuro",
   },
 };

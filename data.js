@@ -150,6 +150,18 @@ window.CV = {
     sEducation: "Education", sLanguages: "Languages", sCertifications: "Certifications",
     running: "● RUNNING", passed: "✓ PASSED", runningTests: (n) => `Running ${n} tests using 3 workers`, passedCount: (n) => `${n} passed`,
     switchLang: "PT", switchLangLabel: "Ver em português",
+    // The "Test Runner" desktop (web view).
+    myCV: "My CV", printable: "Printable CV", otherLang: "Português", winTitle: "Ivo Lopes - Test Runner",
+    menuLabel: "Sections", minimize: "Minimize", maximize: "Maximize", close: "Close", startLabel: "Start menu",
+    mFile: "File", mView: "View", mRun: "Run", mHelp: "Help",
+    downloadPdf: "Download CV (PDF)", downloadShort: "Download CV", runAll: "Run All", stop: "Stop", about: "About",
+    report: "Report", export: "Export", help: "Help", eduShort: "Education",
+    testResults: "Test Results", colTest: "Test", colDetails: "Details", colStatus: "Status",
+    rowPending: "PENDING", rowRunning: "RUNNING", rowPassed: "PASSED", rowStopped: "STOPPED",
+    ready: "Ready", runningStatus: "Running tests…", stoppedStatus: "Stopped. Press Run All to try again.",
+    statusPassed: (n, m) => `${n}/${m} tests passed`,
+    aboutTitle: "About Test Runner", ok: "OK",
+    aboutText: "A CV that runs its own tests. Built by hand in HTML, CSS and JavaScript, and checked on every push by Playwright tests and Lighthouse.",
     themeLabel: "Toggle dark or light theme",
   },
 };

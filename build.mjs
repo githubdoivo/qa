@@ -14,7 +14,7 @@ import { extname, join } from "node:path";
 import { chromium } from "playwright";
 
 const root = new URL(".", import.meta.url).pathname;
-const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".woff": "font/woff" };
+const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".woff": "font/woff", ".webp": "image/webp" };
 const server = createServer(async (req, res) => {
   const path = join(root, decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/\/$/, "/index.html"));
   try {

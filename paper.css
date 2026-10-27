@@ -1,0 +1,63 @@
+/* The printable CV: two A4 sheets, shared by the page and the PDF build
+   (build.mjs prints them through Chrome). Fixed light "paper" colours. */
+
+/* Static (non-variable) copies of the fonts for the printable CV. Chrome
+   embeds variable fonts in PDFs as Type3 glyph drawings with no text map,
+   which some ATS parsers cannot read; static fonts embed as real text. */
+@font-face { font-family: "Inter CV"; font-weight: 400; src: url(fonts/Inter-400.woff) format("woff"); }
+@font-face { font-family: "Inter CV"; font-weight: 600; src: url(fonts/Inter-600.woff) format("woff"); }
+@font-face { font-family: "Inter CV"; font-weight: 700; src: url(fonts/Inter-700.woff) format("woff"); }
+@font-face { font-family: "Space Grotesk CV"; font-weight: 600; src: url(fonts/SpaceGrotesk-600.woff) format("woff"); }
+@font-face { font-family: "Space Grotesk CV"; font-weight: 700; src: url(fonts/SpaceGrotesk-700.woff) format("woff"); }
+
+.sheet-wrap { padding: 32px 16px 64px; display: flex; flex-direction: column; align-items: center; gap: 24px; overflow: hidden; }
+
+/* The sheet is always "paper": fixed light colours regardless of theme. */
+.sheet {
+  --ink: #16191d; --ink-2: #4a525c; --rule: #16191d; --hl: #0a7a4d;
+  --font: "Inter CV", Arial, sans-serif; --display: "Space Grotesk CV", "Inter CV", Arial, sans-serif;
+  width: 210mm; height: 297mm; flex: none; background: #fff; color: var(--ink);
+  padding: 12mm 12mm 10mm; box-shadow: 0 2px 6px rgba(0,0,0,.12), 0 18px 48px rgba(0,0,0,.22);
+  font: 9pt/1.42 var(--font); transform-origin: top center; overflow: hidden;
+}
+.sheet h1 { font: 700 26pt/1 var(--display); letter-spacing: -0.01em; margin: 0; }
+.sheet .s-title { color: var(--hl); font: 600 11.5pt var(--display); margin: 4px 0 6px; }
+.sheet .s-contact { display: flex; flex-wrap: wrap; gap: 4px 16px; font-weight: 500; font-size: 8.3pt; }
+.sheet .s-contact a { text-decoration: none; }
+.sheet .s-contact a, .sheet .s-contact span { display: inline-flex; align-items: center; gap: 4px; }
+.sheet .s-icon { width: 10px; height: 10px; flex: none; }
+.sheet .s-cols { display: grid; grid-template-columns: 1.95fr 1fr; gap: 7mm; margin-top: 6mm; }
+.sheet h2 {
+  font: 700 10.5pt var(--display); text-transform: uppercase;
+  border-bottom: 2px solid var(--rule); padding-bottom: 2px; margin: 0 0 6px;
+}
+.sheet h2 + * { margin-top: 0; }
+.sheet section + section { margin-top: 5mm; }
+.sheet p { margin: 0; }
+.sheet .s-job + .s-job { margin-top: 3mm; padding-top: 2.5mm; border-top: 1px dashed #c7ccd2; }
+.sheet .s-role { font-weight: 700; font-size: 10pt; }
+.sheet .s-cols-top { margin-top: 0; }
+.sheet .s-note { color: var(--ink-2); }
+.sheet .s-certs, .sheet .s-langs { list-style: none; padding: 0; }
+.sheet .s-certs li, .sheet .s-langs li { display: flex; justify-content: space-between; gap: 10px; margin: 2px 0; }
+.sheet .s-year, .sheet .s-langs li span + span { color: var(--ink-2); white-space: nowrap; }
+.sheet .s-langs li span:first-child { font-weight: 600; }
+.sheet .s-company { color: var(--hl); font-weight: 600; }
+.sheet .s-meta { color: var(--ink-2); font-size: 7.8pt; margin: 1px 0 3px; }
+.sheet ul { margin: 0; padding-left: 12px; }
+.sheet li { margin: 1px 0; }
+.sheet li strong { font-weight: 600; }
+.sheet .s-skill + .s-skill { border-top: 1px dashed #c7ccd2; padding-top: 5px; margin-top: 5px; }
+.sheet .s-skill h3 { color: var(--hl); font: 600 8.6pt var(--font); margin: 0 0 1px; }
+
+@media print {
+  @page { size: A4; margin: 0; }
+  .topbar, .viewer-bar, #web { display: none !important; }
+  #paper { display: block !important; background: #fff; }
+  .paper-view { min-height: 0; }
+  .sheet-wrap { padding: 0; height: auto !important; }
+  .sheet-wrap { gap: 0; }
+  .sheet { box-shadow: none; transform: none !important; margin: 0 !important; break-after: page; }
+  .sheet:last-child { break-after: auto; }
+}
+

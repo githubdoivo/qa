@@ -24,8 +24,8 @@ async function pdfLines(file) {
 }
 
 const LANGS = [
-  { lang: "en", about: "About", pdf: "ivo-lopes-cv.pdf", summary: "Summary", headings: ["SUMMARY", "EXPERIENCE", "SKILLS", "CERTIFICATIONS", "EDUCATION", "LANGUAGES"] },
-  { lang: "pt", about: "Sobre", pdf: "ivo-lopes-cv-pt.pdf", summary: "Resumo", headings: ["RESUMO", "EXPERIÊNCIA", "COMPETÊNCIAS", "CERTIFICAÇÕES", "FORMAÇÃO", "LÍNGUAS"] },
+  { lang: "en", about: "Summary", pdf: "ivo-lopes-cv.pdf", summary: "Summary", headings: ["SUMMARY", "EXPERIENCE", "SKILLS", "CERTIFICATIONS", "EDUCATION", "LANGUAGES"] },
+  { lang: "pt", about: "Resumo", pdf: "ivo-lopes-cv-pt.pdf", summary: "Resumo", headings: ["RESUMO", "EXPERIÊNCIA", "COMPETÊNCIAS", "CERTIFICAÇÕES", "FORMAÇÃO", "LÍNGUAS"] },
 ];
 
 function collectErrors(page) {
@@ -42,12 +42,13 @@ for (const { lang, about, pdf, summary, headings } of LANGS) {
       await page.goto(`/?lang=${lang}`);
       await expect(page.locator("html")).toHaveAttribute("lang", lang);
       await expect(page.locator("#hero-name")).toHaveText("Ivo Lopes");
-      await expect(page.locator("#about h2")).toContainText(about);
+      await expect(page.locator("#about-title")).toHaveText(about);
       await expect(page.locator(".job")).toHaveCount(2);
       await expect(page.locator(".project")).toHaveCount(1);
-      await expect(page.locator("#skills-grid .skill-card")).toHaveCount(10);
-      await expect(page.locator("#edu-grid .skill-card")).toHaveCount(3);
-      await expect(page.locator("#term-state")).toHaveClass(/pass/, { timeout: 15_000 });
+      await expect(page.locator("#skills-grid .skill-row")).toHaveCount(10);
+      await expect(page.locator("#edu-grid")).toContainText("ISTQB Advanced Level");
+      await expect(page.locator("#win")).toHaveClass(/passed/, { timeout: 15_000 });
+      await expect(page.locator("#tests-body tr.passed")).toHaveCount(6);
       expect(errors).toEqual([]);
     });
 
@@ -106,10 +107,7 @@ for (const { lang, about, pdf, summary, headings } of LANGS) {
 
     test("has no serious accessibility problems", async ({ page }) => {
       await page.goto(`/?lang=${lang}`);
-      await expect(page.locator("#term-state")).toHaveClass(/pass/, { timeout: 15_000 });
-      // The animation leaves elements mid-fade for a moment; scan the settled page.
-      await page.evaluate(() => document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in")));
-      await page.waitForTimeout(800);
+      await expect(page.locator("#win")).toHaveClass(/passed/, { timeout: 15_000 });
       const { violations } = await new AxeBuilder({ page }).analyze();
       const serious = violations.filter((v) => ["serious", "critical"].includes(v.impact));
       expect(serious.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
@@ -127,14 +125,36 @@ test("switching language and back keeps the visitor's choice", async ({ page }) 
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
 });
 
-test("the theme toggle switches and is remembered", async ({ page }) => {
-  await page.goto("/");
-  const before = await page.locator("html").getAttribute("data-theme");
-  await page.locator("#theme-toggle").click();
-  const after = await page.locator("html").getAttribute("data-theme");
-  expect(after).not.toBe(before);
-  await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", after);
+test("the window minimises to the taskbar and comes back", async ({ page, isMobile }) => {
+  test.skip(isMobile, "on a phone the window is always full screen");
+  await page.goto("/?lang=en");
+  await page.locator("#tb-min").click();
+  await expect(page.locator("#win")).toBeHidden();
+  await page.locator("#task").click();
+  await expect(page.locator("#win")).toBeVisible();
+});
+
+test("Stop halts the run and Run All finishes it", async ({ page }) => {
+  await page.goto("/?lang=en");
+  await page.locator(".toolbar [data-stop]").click();
+  await expect(page.locator("#sb-state")).toContainText("Stopped");
+  await page.locator(".toolbar [data-run]").click();
+  await expect(page.locator("#win")).toHaveClass(/passed/, { timeout: 15_000 });
+  await expect(page.locator("#sb-count")).toHaveText("6/6 tests passed");
+});
+
+test("the menus open printable CV and the About box", async ({ page, isMobile }) => {
+  test.skip(isMobile, "the menu bar is hidden on a phone; the toolbar does the same jobs");
+  await page.goto("/?lang=en");
+  await page.getByRole("menuitem", { name: "Help" }).click();
+  await page.getByRole("menuitem", { name: "About" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toBeHidden();
+  await page.getByRole("menuitem", { name: "File" }).click();
+  await page.getByRole("menuitem", { name: "Printable CV" }).click();
+  await expect(page.locator("#paper")).toBeVisible();
+  await expect(page).toHaveURL(/#cv$/);
 });
 
 test("nothing scrolls sideways on a phone", async ({ page }) => {

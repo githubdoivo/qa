@@ -12,6 +12,8 @@ on:
       - data.pt.js
       - app.js
       - styles.css
+      - os.css
+      - paper.css
       - index.html
       - build.mjs
       - tools/**
