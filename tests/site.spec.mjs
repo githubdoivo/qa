@@ -239,3 +239,13 @@ test("every link on the site still works", async ({ page, request }) => {
   }
   expect(broken).toEqual([]);
 });
+
+test("scrollbars are the classic Windows kind: 16px, with arrow buttons", async ({ page }) => {
+  await page.goto("/?lang=en");
+  const css = await page.evaluate(() => [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules].map((r) => r.cssText); } catch { return []; } }).join("\n"));
+  expect(css).toMatch(/::-webkit-scrollbar \{ width: 16px; height: 16px; \}/);
+  expect(css).toMatch(/::-webkit-scrollbar-button:vertical:decrement/);
+  // Chrome ignores the classic look if scrollbar-color is set, so it is only set for Firefox.
+  const rootColor = await page.evaluate(() => getComputedStyle(document.documentElement).scrollbarColor);
+  expect(rootColor).toBe("auto");
+});
