@@ -195,6 +195,26 @@ test("dragging on the desktop selects the icons inside the box", async ({ page, 
   expect(await page.locator(".desk-icon.selected").count()).toBeGreaterThanOrEqual(2);
 });
 
+test("the night theme switch flips the desktop and is remembered", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/?lang=en");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.locator("[data-theme-toggle]:visible").click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+});
+
+test("night theme has no serious accessibility problems", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/?lang=en");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator("#win")).toHaveClass(/passed/, { timeout: 15_000 });
+  const { violations } = await new AxeBuilder({ page }).analyze();
+  const serious = violations.filter((v) => ["serious", "critical"].includes(v.impact));
+  expect(serious.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+});
+
 test("nothing scrolls sideways on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 780 });
   for (const path of ["/?lang=en", "/?lang=pt", "/writing/flaky-ci.html"]) {

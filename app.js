@@ -449,6 +449,15 @@
   }
   window.addEventListener("resize", () => { if (!$("#paper").hidden) fitSheet(); });
 
+  /* ---------- Night theme switch (in the tray; in the title bar on a phone) ---------- */
+  const root = document.documentElement;
+  if (!root.dataset.theme) root.dataset.theme = "light";
+  document.querySelectorAll("[data-theme-toggle]").forEach((b) => b.addEventListener("click", () => {
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    root.dataset.theme = next;
+    try { localStorage.setItem("theme", next); } catch (_) {}
+  }));
+
   /* ---------- View switching ---------- */
   function setView(view, push) {
     const paper = view === "paper";

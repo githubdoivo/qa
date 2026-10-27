@@ -27,9 +27,17 @@
   <!-- The page has its own fixed look: ask dark-mode extensions to leave it alone. -->
   <meta name="color-scheme" content="only light">
   <meta name="darkreader-lock">
+  <script>
+    // The night theme: the visitor's choice, else their system setting. Set before paint.
+    try {
+      var t = localStorage.getItem("theme");
+      if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
   <link rel="preload" as="image" href="os/wallpaper.webp">
-  <link rel="stylesheet" href="os.css?v=20261027b">
-  <link rel="stylesheet" href="paper.css?v=20261027b">
+  <link rel="stylesheet" href="os.css?v=20261027c">
+  <link rel="stylesheet" href="paper.css?v=20261027c">
 </head>
 <body>
   <!-- ===== Web view: an imaginary 2000s desktop running the "Test Runner" ===== -->
@@ -45,6 +53,7 @@
       <header class="titlebar">
         <img src="os/icons/computer.png" alt="" class="tb-icon">
         <span class="tb-title" id="win-title" data-ui="winTitle">Ivo Lopes - Test Runner</span>
+        <button class="theme-btn tb-theme" type="button" data-theme-toggle data-ui-label="themeLabel"><svg class="sun" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><path fill="#e8a400" d="M7 0h2v2H7zM7 14h2v2H7zM0 7h2v2H0zM14 7h2v2h-2zM2 2h2v2H2zM12 2h2v2h-2zM2 12h2v2H2zM12 12h2v2h-2z"/><path fill="#ffcc1f" d="M6 4h4v1h1v1h1v4h-1v1h-1v1H6v-1H5v-1H4V6h1V5h1z"/></svg><svg class="moon" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><path fill="#f1e7a8" d="M6 1h4v1h-2v1H7v2H6v6h1v2h1v1h2v1H6v-1H4v-1H3v-2H2V5h1V3h1V2h2z"/><path fill="#fff" d="M12 3h1v1h-1zM14 6h1v1h-1zM11 8h1v1h-1z"/></svg></button>
         <button class="tb-btn tb-menu" id="tb-menu" type="button" aria-expanded="false" aria-controls="side" data-ui-label="menuLabel"><span></span></button>
         <div class="tb-btns">
           <button class="tb-btn tb-min" id="tb-min" type="button" data-ui-label="minimize"><span></span></button>
@@ -192,6 +201,7 @@
       <button class="task" id="task" type="button" aria-pressed="true"><img src="os/icons/computer.png" alt=""><span data-ui="winTitle">Ivo Lopes - Test Runner</span></button>
       <button class="task" id="task-doc" type="button" aria-pressed="true" hidden><img src="os/icons/doc-edit.png" alt=""><span data-ui="storyFile">flaky-ci.doc</span></button>
       <div class="tray">
+        <button class="theme-btn" type="button" data-theme-toggle data-ui-label="themeLabel"><svg class="sun" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><path fill="#e8a400" d="M7 0h2v2H7zM7 14h2v2H7zM0 7h2v2H0zM14 7h2v2h-2zM2 2h2v2H2zM12 2h2v2h-2zM2 12h2v2H2zM12 12h2v2h-2z"/><path fill="#ffcc1f" d="M6 4h4v1h1v1h1v4h-1v1h-1v1H6v-1H5v-1H4V6h1V5h1z"/></svg><svg class="moon" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><path fill="#f1e7a8" d="M6 1h4v1h-2v1H7v2H6v6h1v2h1v1h2v1H6v-1H4v-1H3v-2H2V5h1V3h1V2h2z"/><path fill="#fff" d="M12 3h1v1h-1zM14 6h1v1h-1zM11 8h1v1h-1z"/></svg></button>
         <span class="clock" id="clock"></span>
       </div>
     </footer>
@@ -214,9 +224,9 @@
     </div>
   </main>
 
-  <script src="data.js?v=20261027b"></script>
-  <script src="data.pt.js?v=20261027b"></script>
-  <script src="app.js?v=20261027b"></script>
+  <script src="data.js?v=20261027c"></script>
+  <script src="data.pt.js?v=20261027c"></script>
+  <script src="app.js?v=20261027c"></script>
   <!-- Cloudflare Web Analytics: cookie-free visit counts. Loaded only on the
        real domain, so test runs and Lighthouse audits (on localhost) don't
        count as visits or depend on an outside service. -->

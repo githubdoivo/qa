@@ -41,7 +41,7 @@ for (const [lang, file] of [["en", "ivo-lopes-cv.pdf"], ["pt", "ivo-lopes-cv-pt.
   console.log(`Wrote ${file}`);
 }
 
-const og = await browser.newPage({ viewport: { width: 1200, height: 630 }, reducedMotion: "reduce" });
+const og = await browser.newPage({ viewport: { width: 1200, height: 630 }, reducedMotion: "reduce", colorScheme: "light" });
 await og.goto(`${base}/?lang=en`, { waitUntil: "networkidle" });
 await og.evaluate(() => document.fonts.ready);
 await og.waitForSelector("#win.passed");
