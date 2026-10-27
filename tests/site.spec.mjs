@@ -195,24 +195,13 @@ test("dragging on the desktop selects the icons inside the box", async ({ page, 
   expect(await page.locator(".desk-icon.selected").count()).toBeGreaterThanOrEqual(2);
 });
 
-test("the night theme switch flips the desktop and is remembered", async ({ page }) => {
-  await page.emulateMedia({ colorScheme: "light" });
-  await page.goto("/?lang=en");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  await page.locator("[data-theme-toggle]:visible").click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-});
-
-test("night theme has no serious accessibility problems", async ({ page }) => {
+test("one fixed look: no night theme, even when the system is dark", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/?lang=en");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.locator("#win")).toHaveClass(/passed/, { timeout: 15_000 });
-  const { violations } = await new AxeBuilder({ page }).analyze();
-  const serious = violations.filter((v) => ["serious", "critical"].includes(v.impact));
-  expect(serious.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+  await expect(page.locator("[data-theme-toggle]")).toHaveCount(0);
+  await expect(page.locator("html")).not.toHaveAttribute("data-theme", /.*/);
+  const bg = await page.locator(".content").first().evaluate((el) => getComputedStyle(el).backgroundColor);
+  expect(bg).not.toBe("rgb(26, 28, 32)");
 });
 
 test("nothing scrolls sideways on a phone", async ({ page }) => {

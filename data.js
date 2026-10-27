@@ -169,6 +169,5 @@ window.CV = {
     storyFile: "flaky-ci.doc", bin: "Recycle Bin", binEmpty: "The Recycle Bin is empty.",
     binText: "Every bug found here was fixed before it reached production.",
     openWeb: "Open as web page", words: (n) => `${n} words`, loading: "Opening…",
-    themeLabel: "Switch day or night theme",
   },
 };

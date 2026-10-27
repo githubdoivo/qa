@@ -168,6 +168,5 @@ window.CV_PT = {
     storyFile: "flaky-ci.doc", bin: "Reciclagem", binEmpty: "A Reciclagem está vazia.",
     binText: "Todos os bugs encontrados aqui foram corrigidos antes de chegarem a produção.",
     openWeb: "Abrir como página web", words: (n) => `${n} palavras`, loading: "A abrir…",
-    themeLabel: "Alternar tema de dia ou de noite",
   },
 };
