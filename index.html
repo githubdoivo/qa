@@ -64,7 +64,7 @@
         <p class="hero-tagline" id="hero-tagline"></p>
         <div class="hero-cta">
           <a class="btn primary" id="cta-email" href="#contact" data-ui="getInTouch">Get in touch</a>
-          <button class="btn" data-view="paper" data-ui="viewPaper">View one-page CV</button>
+          <button class="btn" data-view="paper" data-ui="viewPaper">View printable CV</button>
         </div>
       </div>
       <div class="terminal" aria-label="Test run summary">
@@ -108,8 +108,13 @@
       <div class="skills" id="skills-grid"></div>
     </section>
 
+    <section class="section" id="education">
+      <h2><span class="num mono">05</span><span data-ui="education">Education &amp; certifications</span></h2>
+      <div class="skills" id="edu-grid"></div>
+    </section>
+
     <section class="section contact" id="contact">
-      <h2><span class="num mono">05</span><span data-ui="contact">Contact</span></h2>
+      <h2><span class="num mono">06</span><span data-ui="contact">Contact</span></h2>
       <p class="contact-lead" data-ui="contactLead">Looking for someone to own quality end to end? Let's talk.</p>
       <div class="contact-links" id="contact-links"></div>
     </section>
@@ -123,7 +128,7 @@
   <main id="paper" class="view paper-view" hidden>
     <div class="viewer-bar mono">
       <span>ivo-lopes-cv.pdf</span>
-      <span data-ui="page">Page 1 / 1</span>
+      <span data-ui="page">2 pages</span>
       <div class="viewer-actions">
         <a class="icon-btn" id="pdf-download" href="ivo-lopes-cv.pdf" download="Ivo Lopes CV.pdf" aria-label="Download PDF" title="Download PDF" data-ui-label="download">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
@@ -132,7 +137,8 @@
       </div>
     </div>
     <div class="sheet-wrap" id="sheet-wrap">
-      <article class="sheet" id="sheet" aria-label="One-page CV"></article>
+      <article class="sheet" id="sheet" aria-label="CV, page 1"></article>
+      <article class="sheet" id="sheet2" aria-label="CV, page 2"></article>
     </div>
   </main>
 

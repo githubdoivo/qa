@@ -14,7 +14,7 @@ import { extname, join } from "node:path";
 import { chromium } from "playwright";
 
 const root = new URL(".", import.meta.url).pathname;
-const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png" };
+const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".woff": "font/woff" };
 const server = createServer(async (req, res) => {
   const path = join(root, decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/\/$/, "/index.html"));
   try {
@@ -35,7 +35,7 @@ for (const [lang, file] of [["en", "ivo-lopes-cv.pdf"], ["pt", "ivo-lopes-cv-pt.
   // The sheet re-fits its text once the fonts are in (see fitText in app.js).
   await page.waitForFunction(() => document.querySelector("#sheet")?.dataset.fitted);
   await page.waitForTimeout(200);
-  await page.pdf({ path: join(root, file), format: "A4", printBackground: true, pageRanges: "1", preferCSSPageSize: true });
+  await page.pdf({ path: join(root, file), format: "A4", printBackground: true, preferCSSPageSize: true });
   await page.close();
   console.log(`Wrote ${file}`);
 }

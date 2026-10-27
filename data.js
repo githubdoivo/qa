@@ -4,7 +4,7 @@
 window.CV = {
   lang: "en",
   name: "Ivo Lopes",
-  title: "QA Automation Engineer",
+  title: "Senior QA Engineer",
   location: "Porto, Portugal",
   coords: "41.15°N 8.61°W",
   timezone: "Europe/Lisbon",
@@ -16,7 +16,7 @@ window.CV = {
 
   tagline: "I break things on purpose, so they don't break in production.",
   summary:
-    "QA Engineer with 5+ years of experience testing capital markets and enterprise cloud systems, currently at Euronext Securities. Strengths span BDD automation with Playwright and Cucumber, event-driven validation across Kafka and PostgreSQL pipelines, and load testing to 500-user peak profiles. Delivered 83+ automated specs and 140+ Gherkin scenarios, cutting manual regression effort by ~80%. Brings test strategy ownership and a record of catching critical defects before release.",
+    "QA Engineer with 5+ years of experience testing capital markets and enterprise cloud systems, currently at Euronext Securities. Strengths span BDD automation with Playwright and Cucumber, event-driven validation across Kafka and PostgreSQL pipelines, and load testing to 500-user peak profiles. Delivered 83+ automated specs and 140+ Gherkin scenarios, cutting manual regression effort by ~80%. Brings test strategy ownership and a record of catching critical defects before release to a Senior QA role.",
 
   // Shown in the hero test-runner animation.
   checks: [
@@ -41,19 +41,18 @@ window.CV = {
     {
       role: "QA Tester",
       company: "Euronext Securities",
-      start: "10/2024",
+      start: "Oct 2024",
       end: "Present",
       location: "Porto, Portugal",
       blurb: "Sole QA across multiple squads on securities and instrument-coding platforms in capital markets.",
-      stack: ["Playwright", "Cucumber", "RestAssured", "Testcontainers", "Kafka", "PostgreSQL", "Artillery", "Xray", "GitHub Actions", "GitLab CI", "SonarQube", "OpenShift", "Coralogix"],
+      stack: ["Playwright", "Cucumber", "Rest Assured", "Testcontainers", "Kafka", "PostgreSQL", "Artillery", "Xray", "GitHub Actions", "GitLab CI", "SonarQube", "OpenShift", "Coralogix"],
       bullets: [
-        "Designed and built a dedicated test automation framework and repository from the ground up, defining its structure, conventions and reporting, and extended test modules inside three existing securities and instrument-coding platforms",
-        "Automated End-to-End (E2E), API, contract, RBAC and event-driven test coverage using Playwright, Cucumber BDD, RestAssured and Testcontainers (Docker) against Kafka and PostgreSQL",
-        "Delivered **83+ automated specs**, **140+ data-driven Gherkin scenarios** and **14 Artillery load/NFR tests** (500-user peak, soak, capacity), cutting manual regression and pre-merge effort by **~80%**",
+        "Engineered test automation and contributed to test planning across three Euronext securities and instrument-coding platforms, using Playwright/TypeScript, Cucumber BDD, Rest Assured, Artillery and Testcontainers (Kafka, PostgreSQL) to cover E2E, API, RBAC, contract, event-driven and performance testing",
+        "Shipped all assigned project scope with **zero post-release defects** raised against it, backed by 100% PR-gated GitHub Actions and GitLab CI pipelines with SonarQube quality gates and Jira/Xray requirement-to-test traceability across **15+ user stories**",
+        "Delivered **83+ automated specs**, **140+ data-driven Gherkin scenarios** and **14 load/NFR tests** (500-user peak, soak, capacity), cutting manual regression and pre-merge effort by **~80%** and new-scenario authoring time by **~40%**",
         "Planned and executed System Integration Testing (SIT) for ISO 20022 message processing across **300+ test scenarios**, covering routing, XML-to-JSON transformation, rejection codes, acknowledgements, persistence integrity and negative paths (malformed messages, duplicates, dead-letter routing)",
-        "Caught **critical defects in SIT before they reached production**, tracing root causes across message-processing, transformation and persistence layers using Coralogix and OpenShift logs",
         "Set test strategy and SIT priorities as sole QA across multiple squads, translating user stories into traceable test cases and aligning critical-feature coverage with the wider QA team",
-        "Introduced Xray for Jira test traceability, authored merge-request and defect-reporting templates adopted as team standard, and gated every PR through GitHub Actions and GitLab CI with SonarQube quality gates",
+        "Introduced Xray for Jira test traceability, and authored merge-request and defect-reporting templates adopted as team standard",
         "Mentored new joiners through the company buddy programme and authored the Confluence guide now used for QA onboarding",
         "Used AI assistants in VS Code with full project context to speed up test case and step-definition authoring, defect investigation and coverage documentation",
       ],
@@ -61,17 +60,18 @@ window.CV = {
     {
       role: "Cloud Engineer & Quality Tester",
       company: "Deloitte",
-      start: "01/2022",
-      end: "10/2024",
+      start: "Jan 2022",
+      end: "Oct 2024",
       location: "Porto, Portugal",
       blurb: "Quality and cloud engineering across 5+ client engagements, from sole QA to QA teams of three.",
-      stack: ["Playwright", "Selenium", "SQL", "Jira", "AWS", "Azure", "Oracle Cloud"],
+      stack: ["Playwright", "Selenium", "Jenkins", "SQL", "Jira", "AWS", "Azure", "Oracle Cloud"],
       bullets: [
         "Owned test planning, test case design and execution across **5+ client engagements**, working as sole QA on smaller teams and within QA teams of up to three on larger programmes",
         "Led a client's **full cloud migration programme** from application assessment through migration execution, writing the pre- and post-migration test plans that kept downtime to a minimum",
         "Automated cross-browser and cross-device UI regression tests in Playwright and Selenium, replacing repetitive manual regression cycles",
+        "Monitored daily Jenkins test pipelines, triaging failed runs and flaky tests to keep regression results reliable for each release",
         "Performed manual functional, regression and integration testing, and queried application databases in SQL to verify data integrity through migration and release cycles",
-        "Logged and tracked defects in Jira from triage through closure, and fed UI/UX findings back to development teams to drive usability fixes",
+        "Logged and tracked defects in Jira from triage through closure and fed UI/UX findings back to development teams to drive usability fixes",
       ],
     },
   ],
@@ -98,34 +98,56 @@ window.CV = {
   ],
 
   skills: [
-    { group: "Test Automation", items: ["Playwright", "Selenium", "Cucumber", "RestAssured", "Testcontainers"] },
+    { group: "Programming Languages", items: ["Java", "SQL", "Gherkin", "YAML"] },
+    { group: "Test Automation", items: ["Playwright", "Selenium", "Cucumber", "Rest Assured", "Testcontainers"] },
     { group: "API & Performance Testing", items: ["Postman", "REST APIs", "Artillery"] },
     { group: "Testing Types", items: ["Manual", "Functional", "Regression", "End-to-End (E2E)", "UI", "Cross-Browser", "API", "Integration", "System Integration Testing (SIT)", "Event-Driven", "Contract", "Data-Driven", "RBAC", "Performance/Load (peak, soak, capacity)", "Non-Functional (NFR)"] },
-    { group: "Test Design & Management", items: ["Test Plans", "Test Case Design", "Requirements Traceability", "Bug Tracking", "Defect Lifecycle Management", "Jira", "Xray", "Confluence"] },
+    { group: "Test Design & Management", items: ["Test Plans", "Test Case Design", "Requirements Traceability", "Defect Lifecycle Management", "Jira", "Xray", "Confluence"] },
     { group: "Databases & Messaging", items: ["PostgreSQL", "Kafka"] },
-    { group: "CI/CD & Quality Gates", items: ["Git", "GitHub Actions", "GitLab CI", "SonarQube", "CI/CD"] },
-    { group: "Containers, Platforms & Monitoring", items: ["Docker", "OpenShift", "Coralogix"] },
+    { group: "CI/CD & Quality Gates", items: ["Git", "GitHub Actions", "GitLab CI", "Jenkins", "SonarQube"] },
+    { group: "Containers & Monitoring", items: ["Docker", "OpenShift", "Coralogix"] },
     { group: "Cloud", items: ["AWS", "Azure", "Oracle Cloud"] },
     { group: "Methodologies", items: ["Agile/Scrum", "Behaviour-Driven Development (BDD)", "Test Strategy", "AI-Assisted Testing", "Team Onboarding & Enablement"] },
   ],
 
+  education: [
+    { degree: "M.Sc. Mechanical Engineering", school: "University of Minho", location: "Braga, Portugal", year: "2021", note: "Specialization in Automation and Robotics" },
+  ],
+
+  languages: [
+    { name: "Portuguese", level: "Native" },
+    { name: "English", level: "Fluent, C1" },
+    { name: "Spanish", level: "Intermediate, B1" },
+  ],
+
+  certifications: [
+    { name: "ISTQB Advanced Level – Test Automation Engineering (CTAL-TAE)", year: "" },
+    { name: "AWS Certified Solutions Architect – Associate", year: "2023" },
+    { name: "AWS Cloud Practitioner", year: "2023" },
+    { name: "Oracle Cloud Infrastructure Foundations", year: "2023" },
+    { name: "Professional Scrum Master I (PSM I)", year: "2022" },
+    { name: "ISTQB Certified Tester – Foundation Level (CTFL)", year: "2022" },
+    { name: "Microsoft Azure Fundamentals (AZ-900)", year: "2022" },
+  ],
+
   // Interface text (headings, buttons, labels).
   ui: {
-    pageTitle: "Ivo Lopes · QA Automation Engineer",
+    pageTitle: "Ivo Lopes · Senior QA Engineer",
     present: "Present",
     current: "current",
     more: (n) => `+ ${n} more`,
     less: "− show less",
-    about: "About", experience: "Experience", projects: "Projects", toolkit: "Toolkit", contact: "Contact",
-    getInTouch: "Get in touch", viewPaper: "View one-page CV",
+    about: "About", experience: "Experience", projects: "Projects", toolkit: "Toolkit", education: "Education & certifications", contact: "Contact",
+    getInTouch: "Get in touch", viewPaper: "View printable CV",
     contactLead: "Looking for someone to own quality end to end? Let's talk.",
     copyEmail: "Copy email", copied: "Copied ✓",
     tryDemo: "Try the live demo ↗", code: "Code on GitHub ↗", tests: "E2E tests (Playwright + Cucumber) ↗", readStory: "Read: fixing a flaky CI suite →",
     liveDemo: "live demo",
     footerChecks: "All checks passed ✓",
-    web: "Web", paper: "Paper", page: "Page 1 / 1", back: "← Back to website", download: "Download PDF",
+    web: "Web", paper: "Paper", page: "2 pages", back: "← Back to website", download: "Download PDF",
     pdfFile: "ivo-lopes-cv.pdf", pdfName: "Ivo Lopes CV.pdf",
     sSummary: "Summary", sExperience: "Experience", sSkills: "Skills", sProject: "Project",
+    sEducation: "Education", sLanguages: "Languages", sCertifications: "Certifications",
     running: "● RUNNING", passed: "✓ PASSED", runningTests: (n) => `Running ${n} tests using 3 workers`, passedCount: (n) => `${n} passed`,
     switchLang: "PT", switchLangLabel: "Ver em português",
     themeLabel: "Toggle dark or light theme",

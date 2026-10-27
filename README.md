@@ -4,7 +4,8 @@
 
 Personal CV site: plain HTML/CSS/JS, hosted on GitHub Pages.
 
-- **Edit content in `data.js` only.** It feeds both the web view and the one-page "Paper" view.
+- **Edit content in `data.js` only.** It feeds both the web view and the two-page "Paper" view (and so the PDFs). Keep `data.pt.js` in step.
+- **The PDFs must stay ATS-readable.** The paper view uses static copies of the fonts in `fonts/` (variable web fonts end up as unreadable Type3 fonts in the PDF), plain section names, and name/contact first. `tests/site.spec.mjs` reads the built PDFs like an ATS and fails if any of that breaks.
 - **Two languages:** `data.js` (English) and `data.pt.js` (Portuguese) hold the same content; update both. The site picks the visitor's browser language, and `?lang=pt` / `?lang=en` links straight to either.
 - **Generated files** (`ivo-lopes-cv.pdf`, `ivo-lopes-cv-pt.pdf`, `og-image.png`) are rebuilt by GitHub Actions on every push to `main`. To build them locally: `npm install` then `npm run build`.
 - **Tests:** `npm test` (Playwright). CI runs them, plus link checks and a Lighthouse audit, on every push.

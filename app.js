@@ -104,6 +104,22 @@
       </div>`)
     .join("");
 
+  $("#edu-grid").innerHTML =
+    cv.education.map((e) => `<div class="skill-card reveal">
+        <h3>${esc(ui.sEducation)}</h3>
+        <p class="edu-degree">${esc(e.degree)}</p>
+        <p class="edu-meta">${esc(e.school)}, ${esc(e.location)} · ${esc(e.year)}</p>
+        <p class="edu-meta">${esc(e.note)}</p>
+      </div>`).join("") +
+    `<div class="skill-card reveal">
+        <h3>${esc(ui.sLanguages)}</h3>
+        <ul class="edu-list">${cv.languages.map((l) => `<li><span>${esc(l.name)}</span><span class="edu-meta">${esc(l.level)}</span></li>`).join("")}</ul>
+      </div>
+      <div class="skill-card reveal wide">
+        <h3>${esc(ui.sCertifications)}</h3>
+        <ul class="edu-list">${cv.certifications.map((c) => `<li><span>${esc(c.name)}</span><span class="edu-meta">${esc(c.year)}</span></li>`).join("")}</ul>
+      </div>`;
+
   $("#cta-email").href = `mailto:${cv.email}`;
   $("#contact-links").innerHTML =
     `<a class="btn primary" href="mailto:${esc(cv.email)}">${esc(cv.email)}</a>
@@ -199,7 +215,7 @@
     document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
   }
 
-  /* ---------- Paper (one-page) view ---------- */
+  /* ---------- Paper (printable, two-page) view ---------- */
   // Drawn icons rather than symbol characters, so the PDF looks the same
   // whatever fonts the machine building it has.
   const svg = (d) => `<svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -208,6 +224,15 @@
     link: svg('<path d="M7 17 17 7"/><path d="M8 7h9v9"/>'),
     pin: svg('<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'),
   };
+  // Two A4 pages, written in the order an ATS (applicant tracking system)
+  // reads them: name and contact first, then the main column, then the side
+  // column. Plain section names, real text, no letter-spaced headings.
+  const job = (j) => `<div class="s-job">
+            <div class="s-role">${esc(j.role)} · <span class="s-company">${esc(j.company)}</span></div>
+            <div class="s-meta">${esc(j.start)} – ${esc(j.end)} · ${esc(j.location)}</div>
+            <ul>${j.bullets.map((b) => `<li>${esc(plain(b))}</li>`).join("")}</ul>
+          </div>`;
+  const [firstJob, ...laterJobs] = cv.experience;
   $("#sheet").innerHTML = `
     <h1>${esc(cv.name)}</h1>
     <div class="s-title">${esc(cv.title)}</div>
@@ -219,57 +244,71 @@
     <div class="s-cols">
       <div>
         <section><h2>${esc(ui.sSummary)}</h2><p>${esc(plain(cv.summary))}</p></section>
-        <section><h2>${esc(ui.sExperience)}</h2>
-          ${cv.experience.map((j) => `<div class="s-job">
-            <div class="s-role">${esc(j.role)}</div>
-            <div class="s-company">${esc(j.company)}</div>
-            <div class="s-meta">${esc(j.start)} – ${esc(j.end)} · ${esc(j.location)}</div>
-            <ul>${j.bullets.map((b) => `<li>${esc(plain(b))}</li>`).join("")}</ul>
-          </div>`).join("")}
-        </section>
+        <section><h2>${esc(ui.sExperience)}</h2>${job(firstJob)}</section>
       </div>
       <div>
         <section><h2>${esc(ui.sSkills)}</h2>
           ${cv.skills.map((g) => `<div class="s-skill"><h3>${esc(g.group)}</h3><p>${g.items.map(esc).join(", ")}</p></div>`).join("")}
         </section>
+      </div>
+    </div>`;
+  $("#sheet2").innerHTML = `
+    <div class="s-cols s-cols-top">
+      <div>
+        <section><h2>${esc(ui.sExperience)}</h2>${laterJobs.map(job).join("")}</section>
+        <section><h2>${esc(ui.sCertifications)}</h2>
+          <ul class="s-certs">${cv.certifications.map((c) => `<li><span>${esc(c.name)}</span>${c.year ? `<span class="s-year">${esc(c.year)}</span>` : ""}</li>`).join("")}</ul>
+        </section>
         <section><h2>${esc(ui.sProject)}</h2>
-          ${cv.projects.map((p) => `<div class="s-skill"><h3><a href="${esc(p.href)}" target="_blank" rel="noopener">${esc(p.name)} ↗</a> · <a href="${esc(p.demo)}" target="_blank" rel="noopener">${esc(ui.liveDemo)} ↗</a></h3>
-            <p>${esc(p.points.slice(0, 3).map(plain).join("; "))}.</p></div>`).join("")}
+          ${cv.projects.map((p) => `<div class="s-skill"><h3><a href="${esc(p.href)}" target="_blank" rel="noopener">${esc(p.name)}</a> · <a href="${esc(p.demo)}" target="_blank" rel="noopener">${esc(p.demo.replace(/^https:\/\//, ""))}</a></h3>
+            <p>${esc(plain(p.kind))}. ${esc(p.points.slice(0, 3).map(plain).join("; "))}.</p></div>`).join("")}
+        </section>
+      </div>
+      <div>
+        <section><h2>${esc(ui.sEducation)}</h2>
+          ${cv.education.map((e) => `<div class="s-skill"><h3>${esc(e.degree)}</h3><p>${esc(e.school)}, ${esc(e.location)} · ${esc(e.year)}</p><p class="s-note">${esc(e.note)}</p></div>`).join("")}
+        </section>
+        <section><h2>${esc(ui.sLanguages)}</h2>
+          <ul class="s-langs">${cv.languages.map((l) => `<li><span>${esc(l.name)}</span><span>${esc(l.level)}</span></li>`).join("")}</ul>
         </section>
       </div>
     </div>`;
 
-  // Keep the sheet to one page wherever it renders. Text comes out wider on
-  // some systems (Linux, where the PDF is built) and the CV grows over time,
-  // so if it runs past the bottom, step the size down until it fits - never
+  // Keep each page inside its A4 sheet wherever it renders. Text comes out
+  // wider on some systems (Linux, where the PDF is built), so if a page runs
+  // past the bottom, step the size down on both pages until they fit - never
   // below a size that stays comfortable to read.
   const wrap = $("#sheet-wrap");
   const sheet = $("#sheet");
-  const BASE_PT = 8.4;
-  const MIN_PT = 7.4;
+  const pages = [...document.querySelectorAll(".sheet")];
+  const BASE_PT = 9;
+  const MIN_PT = 8;
   function fitText() {
     if ($("#paper").hidden) return;
     let size = BASE_PT;
-    sheet.style.fontSize = `${size}pt`;
-    while (sheet.scrollHeight > sheet.clientHeight && size > MIN_PT) {
+    const set = () => pages.forEach((p) => (p.style.fontSize = `${size}pt`));
+    const overflows = () => pages.some((p) => p.scrollHeight > p.clientHeight);
+    set();
+    while (overflows() && size > MIN_PT) {
       size = Math.round((size - 0.1) * 10) / 10;
-      sheet.style.fontSize = `${size}pt`;
+      set();
     }
     sheet.dataset.fitted = String(size);
   }
   if (document.fonts) document.fonts.ready.then(() => { fitText(); fitSheet(); });
 
-  // Scale the A4 sheet down to fit narrow screens.
+  // Scale the A4 sheets down to fit narrow screens.
   function fitSheet() {
-    sheet.style.transform = "";
+    pages.forEach((p) => (p.style.transform = ""));
     wrap.style.height = "";
     const avail = wrap.clientWidth - 32;
-    const w = sheet.offsetWidth;
-    const scale = Math.min(1, avail / w);
+    const scale = Math.min(1, avail / sheet.offsetWidth);
     if (scale < 1) {
-      sheet.style.transform = `scale(${scale})`;
-      wrap.style.height = `${sheet.offsetHeight * scale + 96}px`;
-    }
+      pages.forEach((p) => (p.style.transform = `scale(${scale})`));
+      const gap = 24;
+      pages.forEach((p, i) => (p.style.marginTop = i ? `${-p.offsetHeight * (1 - scale) + gap}px` : ""));
+      wrap.style.height = `${pages.length * (sheet.offsetHeight * scale + gap) + 96}px`;
+    } else pages.forEach((p) => (p.style.marginTop = ""));
   }
   window.addEventListener("resize", () => { if (!$("#paper").hidden) fitSheet(); });
 

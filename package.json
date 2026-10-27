@@ -10,6 +10,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.64.0",
+    "pdfjs-dist": "6.4.299",
     "playwright": "^1.64.0"
   }
 }
