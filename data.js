@@ -18,6 +18,10 @@ window.CV = {
   summary:
     "QA Engineer with 5+ years of experience testing capital markets and enterprise cloud systems, currently at Euronext Securities. Strengths span BDD automation with Playwright and Cucumber, event-driven validation across Kafka and PostgreSQL pipelines, and load testing to 500-user peak profiles. Delivered 83+ automated specs and 140+ Gherkin scenarios, cutting manual regression effort by ~80%. Brings test strategy ownership and a record of catching critical defects before release to a Senior QA role.",
 
+  // The web page's "about me": human words, no numbers (the Test Results
+  // panel carries those). The PDF keeps the ATS-style summary above.
+  about:
+    "I'm a QA engineer in Porto. At Euronext Securities I test the platforms behind securities and instrument coding: I build the automation, plan the integration testing and act as the quality voice across several squads. Before that, at Deloitte, I tested client systems and moved them safely to the cloud. I like tests people can trust, pipelines that stay green for the right reasons, and helping new joiners get there too.",
   // Shown in the hero test-runner animation.
   checks: [
     ["experience", "5+ years in capital markets & enterprise cloud"],
@@ -162,6 +166,8 @@ window.CV = {
     statusPassed: (n, m) => `${n}/${m} tests passed`,
     aboutTitle: "About Test Runner", ok: "OK",
     aboutText: "A CV that runs its own tests. Built by hand in HTML, CSS and JavaScript, and checked on every push by Playwright tests and Lighthouse.",
+    storyFile: "flaky-ci.txt", bin: "Recycle Bin", binEmpty: "The Recycle Bin is empty.",
+    binText: "Every bug found here was fixed before it reached production.",
     themeLabel: "Toggle dark or light theme",
   },
 };

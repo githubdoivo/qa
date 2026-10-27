@@ -143,18 +143,33 @@ test("Stop halts the run and Run All finishes it", async ({ page }) => {
   await expect(page.locator("#sb-count")).toHaveText("6/6 tests passed");
 });
 
-test("the menus open printable CV and the About box", async ({ page, isMobile }) => {
-  test.skip(isMobile, "the menu bar is hidden on a phone; the toolbar does the same jobs");
+test("the toolbar opens the About box and the printable CV", async ({ page }) => {
   await page.goto("/?lang=en");
-  await page.getByRole("menuitem", { name: "Help" }).click();
-  await page.getByRole("menuitem", { name: "About" }).click();
+  await page.locator(".toolbar [data-about]").click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toBeHidden();
-  await page.getByRole("menuitem", { name: "File" }).click();
-  await page.getByRole("menuitem", { name: "Printable CV" }).click();
+  await page.locator(".toolbar [data-view=paper]").click();
   await expect(page.locator("#paper")).toBeVisible();
   await expect(page).toHaveURL(/#cv$/);
+});
+
+test("each action has one home: no duplicate download or print buttons", async ({ page }) => {
+  await page.goto("/?lang=en");
+  await expect(page.locator("#web .pdf-link")).toHaveCount(1);
+  await expect(page.locator('#web [data-view="paper"]')).toHaveCount(1);
+  await expect(page.locator("#web [data-lang]")).toHaveCount(1);
+  // The web summary is the human one; the numbers live in Test Results.
+  expect(await page.locator("#summary").textContent()).not.toMatch(/\d/);
+});
+
+test("the Recycle Bin opens and closes", async ({ page, isMobile }) => {
+  test.skip(isMobile, "no desktop icons on a phone");
+  await page.goto("/?lang=en");
+  await page.locator("#desk-bin").click();
+  await expect(page.getByRole("dialog")).toContainText("empty");
+  await page.getByRole("button", { name: "OK" }).click();
+  await expect(page.getByRole("dialog")).toBeHidden();
 });
 
 test("nothing scrolls sideways on a phone", async ({ page }) => {

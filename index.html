@@ -36,9 +36,9 @@
   <main id="web" class="view desktop">
     <nav class="desk-icons" aria-label="Desktop">
       <a class="desk-icon" href="#win" id="desk-cv"><img src="os/icons/computer.png" alt=""><span data-ui="myCV">My CV</span></a>
-      <button class="desk-icon" type="button" data-view="paper"><img src="os/icons/report.png" alt=""><span data-ui="printable">Printable CV</span></button>
-      <a class="desk-icon" id="desk-mail" href="mailto:mail@ivolopes.com"><img src="os/icons/mail.png" alt=""><span data-ui="contact">Contact</span></a>
-      <button class="desk-icon" type="button" data-lang><img src="os/icons/globe.png" alt=""><span data-ui="otherLang">Português</span></button>
+      <a class="desk-icon" href="https://demo.appdoivo.com" target="_blank" rel="noopener"><img src="os/icons/package.png" alt=""><span>appdoivo</span></a>
+      <a class="desk-icon" href="writing/flaky-ci.html"><img src="os/icons/doc-search.png" alt=""><span data-ui="storyFile">flaky-ci.txt</span></a>
+      <button class="desk-icon" type="button" id="desk-bin"><img src="os/icons/recycle.png" alt=""><span data-ui="bin">Recycle Bin</span></button>
     </nav>
 
     <section class="window" id="win" aria-labelledby="win-title">
@@ -53,42 +53,13 @@
         </div>
       </header>
 
-      <div class="menubar" role="menubar" aria-label="Menu">
-        <div class="menu">
-          <button type="button" role="menuitem" aria-haspopup="true" aria-expanded="false" data-ui="mFile">File</button>
-          <div class="dropdown" role="menu" hidden>
-            <button type="button" role="menuitem" data-view="paper"><img src="os/icons/report.png" alt=""><span data-ui="printable">Printable CV</span></button>
-            <a role="menuitem" class="pdf-link" href="ivo-lopes-cv.pdf" download><img src="os/icons/download.png" alt=""><span data-ui="downloadPdf">Download CV (PDF)</span></a>
-          </div>
-        </div>
-        <div class="menu">
-          <button type="button" role="menuitem" aria-haspopup="true" aria-expanded="false" data-ui="mView">View</button>
-          <div class="dropdown" role="menu" hidden>
-            <button type="button" role="menuitem" data-lang><img src="os/icons/globe.png" alt=""><span data-ui="otherLang">Português</span></button>
-            <button type="button" role="menuitem" data-view="paper"><img src="os/icons/document.png" alt=""><span data-ui="printable">Printable CV</span></button>
-          </div>
-        </div>
-        <div class="menu">
-          <button type="button" role="menuitem" aria-haspopup="true" aria-expanded="false" data-ui="mRun">Run</button>
-          <div class="dropdown" role="menu" hidden>
-            <button type="button" role="menuitem" data-run><img src="os/icons/play.png" alt=""><span data-ui="runAll">Run All</span></button>
-            <button type="button" role="menuitem" data-stop><img src="os/icons/stop.png" alt=""><span data-ui="stop">Stop</span></button>
-          </div>
-        </div>
-        <div class="menu">
-          <button type="button" role="menuitem" aria-haspopup="true" aria-expanded="false" data-ui="mHelp">Help</button>
-          <div class="dropdown" role="menu" hidden>
-            <button type="button" role="menuitem" data-about><img src="os/icons/info.png" alt=""><span data-ui="about">About</span></button>
-          </div>
-        </div>
-      </div>
 
       <div class="toolbar" role="toolbar" aria-label="Tools">
         <button type="button" class="tool" data-run><img src="os/icons/play.png" alt=""><span data-ui="runAll">Run All</span></button>
         <button type="button" class="tool" data-stop><img src="os/icons/stop.png" alt=""><span data-ui="stop">Stop</span></button>
         <span class="tool-sep"></span>
-        <button type="button" class="tool" data-view="paper"><img src="os/icons/report.png" alt=""><span data-ui="report">Report</span></button>
-        <a class="tool pdf-link" href="ivo-lopes-cv.pdf" download><img src="os/icons/export.png" alt=""><span data-ui="export">Export</span></a>
+        <button type="button" class="tool" data-view="paper"><img src="os/icons/report.png" alt=""><span data-ui="printable">Printable CV</span></button>
+        <a class="tool pdf-link" href="ivo-lopes-cv.pdf" download><img src="os/icons/download.png" alt=""><span data-ui="downloadShort">Download CV</span></a>
         <span class="tool-sep"></span>
         <button type="button" class="tool" id="lang-toggle" data-lang><img src="os/icons/globe.png" alt=""><span data-ui="switchLang">PT</span></button>
         <button type="button" class="tool tool-end" data-about><img src="os/icons/help.png" alt=""><span data-ui="help">Help</span></button>
@@ -102,7 +73,6 @@
           <a href="#skills"><img src="os/icons/settings.png" alt=""><span data-ui="sSkills">Skills</span></a>
           <a href="#education"><img src="os/icons/star.png" alt=""><span data-ui="eduShort">Education</span></a>
           <a href="#contact"><img src="os/icons/mail.png" alt=""><span data-ui="contact">Contact</span></a>
-          <a class="pdf-link" href="ivo-lopes-cv.pdf" download><img src="os/icons/document.png" alt=""><span data-ui="downloadShort">Download CV</span></a>
         </nav>
 
         <div class="content" id="content" tabindex="-1">
@@ -157,10 +127,6 @@
             <div class="contact-links" id="contact-links"></div>
           </details>
 
-          <div class="panel download">
-            <a class="btn btn-big pdf-link" id="pdf-big" href="ivo-lopes-cv.pdf" download><img src="os/icons/document.png" alt=""><span data-ui="downloadPdf">Download CV (PDF)</span></a>
-            <button class="btn" type="button" data-view="paper" data-ui="printable">Printable CV</button>
-          </div>
 
           <p class="footnote"><a class="checks-link" id="checks-link" href="https://github.com/githubdoivo/qa/actions/workflows/ci.yml" target="_blank" rel="noopener"><img src="os/icons/ok.png" alt=""><span data-ui="footerChecks">All checks passed ✓</span></a> · © <span id="year"></span> Ivo Lopes</p>
         </div>
@@ -189,19 +155,22 @@
       </div>
     </div>
 
-    <footer class="taskbar">
-      <button class="start" id="start" type="button" aria-expanded="false" aria-controls="start-menu" data-ui-label="startLabel"><img src="os/icons/computer.png" alt=""></button>
-      <div class="start-menu" id="start-menu" hidden>
-        <div class="sm-head"><img src="os/icons/user.png" alt=""><span>Ivo Lopes</span></div>
-        <a href="#win" data-restore><img src="os/icons/computer.png" alt=""><span data-ui="myCV">My CV</span></a>
-        <button type="button" data-view="paper"><img src="os/icons/report.png" alt=""><span data-ui="printable">Printable CV</span></button>
-        <a class="pdf-link" href="ivo-lopes-cv.pdf" download><img src="os/icons/download.png" alt=""><span data-ui="downloadPdf">Download CV (PDF)</span></a>
-        <a id="sm-mail" href="mailto:mail@ivolopes.com"><img src="os/icons/mail.png" alt=""><span data-ui="contact">Contact</span></a>
-        <button type="button" data-lang><img src="os/icons/globe.png" alt=""><span data-ui="otherLang">Português</span></button>
+    <div class="dialog-backdrop" id="bin-dialog" hidden>
+      <div class="window dialog" role="dialog" aria-modal="true" aria-labelledby="bin-head">
+        <header class="titlebar"><img src="os/icons/recycle.png" alt="" class="tb-icon"><span class="tb-title" id="bin-head" data-ui="bin">Recycle Bin</span>
+          <div class="tb-btns"><button class="tb-btn tb-close" type="button" data-close data-ui-label="close"><span></span></button></div></header>
+        <div class="dialog-body">
+          <img src="os/icons/bug.png" alt="">
+          <div><p><strong data-ui="binEmpty">The Recycle Bin is empty.</strong></p><p data-ui="binText"></p></div>
+        </div>
+        <div class="dialog-actions"><button class="btn" type="button" data-close data-ui="ok">OK</button></div>
       </div>
+    </div>
+
+    <footer class="taskbar">
+      <span class="start" aria-hidden="true"><img src="os/icons/computer.png" alt=""></span>
       <button class="task" id="task" type="button" aria-pressed="true"><img src="os/icons/computer.png" alt=""><span data-ui="winTitle">Ivo Lopes - Test Runner</span></button>
       <div class="tray">
-        <img src="os/icons/globe.png" alt=""><span id="where"></span>
         <span class="clock" id="clock"></span>
       </div>
     </footer>

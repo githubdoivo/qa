@@ -18,6 +18,10 @@ window.CV_PT = {
   summary:
     "Mais de 5 anos em QA de sistemas de mercados de capitais e de cloud empresarial, atualmente na Euronext Securities. Automação BDD com Playwright e Cucumber, validação orientada a eventos em Kafka e PostgreSQL, e testes de carga até picos de 500 utilizadores. Mais de 83 specs automatizadas e 140 cenários Gherkin, com ~80% menos esforço de regressão manual. Experiência a definir a estratégia de testes e historial de defeitos críticos detetados antes de produção, para uma função de Senior QA.",
 
+  // O "sobre mim" da página web: palavras simples, sem números (estão no
+  // painel de resultados dos testes). O PDF mantém o resumo para ATS acima.
+  about:
+    "Sou QA engineer no Porto. Na Euronext Securities testo as plataformas por trás de valores mobiliários e da codificação de instrumentos: construo a automação, planeio os testes de integração e dou voz à qualidade em várias squads. Antes disso, na Deloitte, testei sistemas de clientes e levei-os em segurança para a cloud. Gosto de testes em que se pode confiar, de pipelines verdes pelas razões certas e de ajudar quem chega à equipa a fazer o mesmo.",
   // A animação de testes no topo da página.
   checks: [
     ["experiência", "5+ anos em mercados de capitais e cloud empresarial"],
@@ -161,6 +165,8 @@ window.CV_PT = {
     statusPassed: (n, m) => `${n}/${m} testes passaram`,
     aboutTitle: "Acerca do Test Runner", ok: "OK",
     aboutText: "Um CV que corre os próprios testes. Feito à mão em HTML, CSS e JavaScript, e verificado a cada push com testes Playwright e Lighthouse.",
+    storyFile: "flaky-ci.txt", bin: "Reciclagem", binEmpty: "A Reciclagem está vazia.",
+    binText: "Todos os bugs encontrados aqui foram corrigidos antes de chegarem a produção.",
     themeLabel: "Alternar tema claro ou escuro",
   },
 };

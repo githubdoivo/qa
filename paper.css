@@ -14,7 +14,7 @@
 
 /* The sheet is always "paper": fixed light colours regardless of theme. */
 .sheet {
-  --ink: #16191d; --ink-2: #4a525c; --rule: #16191d; --hl: #0a7a4d;
+  --ink: #111418; --ink-2: #4a525c; --rule: #111418; --hl: #1f4fb4;
   --font: "Inter CV", Arial, sans-serif; --display: "Space Grotesk CV", "Inter CV", Arial, sans-serif;
   width: 210mm; height: 297mm; flex: none; background: #fff; color: var(--ink);
   padding: 12mm 12mm 10mm; box-shadow: 0 2px 6px rgba(0,0,0,.12), 0 18px 48px rgba(0,0,0,.22);
@@ -34,7 +34,7 @@
 .sheet h2 + * { margin-top: 0; }
 .sheet section + section { margin-top: 5mm; }
 .sheet p { margin: 0; }
-.sheet .s-job + .s-job { margin-top: 3mm; padding-top: 2.5mm; border-top: 1px dashed #c7ccd2; }
+.sheet .s-job + .s-job { margin-top: 3mm; padding-top: 2.5mm; border-top: 1px dashed #b9c6e0; }
 .sheet .s-role { font-weight: 700; font-size: 10pt; }
 .sheet .s-cols-top { margin-top: 0; }
 .sheet .s-note { color: var(--ink-2); }
@@ -47,7 +47,7 @@
 .sheet ul { margin: 0; padding-left: 12px; }
 .sheet li { margin: 1px 0; }
 .sheet li strong { font-weight: 600; }
-.sheet .s-skill + .s-skill { border-top: 1px dashed #c7ccd2; padding-top: 5px; margin-top: 5px; }
+.sheet .s-skill + .s-skill { border-top: 1px dashed #b9c6e0; padding-top: 5px; margin-top: 5px; }
 .sheet .s-skill h3 { color: var(--hl); font: 600 8.6pt var(--font); margin: 0 0 1px; }
 
 @media print {

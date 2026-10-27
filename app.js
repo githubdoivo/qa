@@ -42,8 +42,7 @@
   $("#hero-role").textContent = cv.title;
   $("#hero-where").textContent = cv.location;
   $("#hero-tagline").textContent = cv.tagline;
-  $("#summary").innerHTML = rich(cv.summary);
-  $("#where").textContent = cv.location;
+  $("#summary").innerHTML = rich(cv.about);
   $("#year").textContent = new Date().getFullYear();
 
   const SHOWN = 4;
@@ -55,10 +54,9 @@
           <h3><span class="company">${esc(j.company)}</span><span class="role">${esc(j.role)}</span></h3>
           <span class="when">${esc(j.start)} – ${esc(j.end)}</span>
         </div>
-        <p class="muted">${esc(j.location)} · ${esc(j.blurb)}</p>
+        <p class="muted">${esc(j.blurb)}</p>
         <ul class="bullets${long ? " collapsed" : ""}" id="b${i}">${j.bullets.map((b) => `<li>${rich(b)}</li>`).join("")}</ul>
         ${long ? `<button class="more" type="button" aria-controls="b${i}" aria-expanded="false">${esc(ui.more(j.bullets.length - SHOWN))}</button>` : ""}
-        <div class="tags">${j.stack.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div>
       </article>`;
     })
     .join("");
@@ -206,36 +204,7 @@
   document.querySelectorAll("[data-stop]").forEach((b) => b.addEventListener("click", stop));
   run();
 
-  /* ---------- Menus (menu bar and start menu) ---------- */
-  const closeMenus = (except) => {
-    document.querySelectorAll(".menu > button[aria-expanded='true']").forEach((b) => {
-      if (b === except) return;
-      b.setAttribute("aria-expanded", "false");
-      b.nextElementSibling.hidden = true;
-    });
-    if (except !== $("#start")) { $("#start").setAttribute("aria-expanded", "false"); $("#start-menu").hidden = true; }
-  };
-  document.querySelectorAll(".menu > button").forEach((b) => b.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const open = b.getAttribute("aria-expanded") !== "true";
-    closeMenus(b);
-    b.setAttribute("aria-expanded", String(open));
-    b.nextElementSibling.hidden = !open;
-    if (open) b.nextElementSibling.querySelector("[role=menuitem]")?.focus();
-  }));
-  // Hovering across an open menu bar switches menus, like the real thing.
-  document.querySelectorAll(".menu > button").forEach((b) => b.addEventListener("mouseenter", () => {
-    if ($(".menu > button[aria-expanded='true']") && b.getAttribute("aria-expanded") !== "true") b.click();
-  }));
-  $("#start").addEventListener("click", (e) => {
-    e.stopPropagation();
-    const open = $("#start-menu").hidden;
-    closeMenus($("#start"));
-    $("#start-menu").hidden = !open;
-    $("#start").setAttribute("aria-expanded", String(open));
-  });
-  document.addEventListener("click", () => closeMenus());
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeMenus(); closeAbout(); } });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDialogs(); });
 
   /* ---------- Window buttons, taskbar and side menu ---------- */
   const win = $("#win");
@@ -250,7 +219,7 @@
   $("#tb-max").addEventListener("click", () => win.classList.toggle("maximized"));
   $(".titlebar").addEventListener("dblclick", () => win.classList.toggle("maximized"));
   task.addEventListener("click", () => setMinimized(!win.classList.contains("minimized")));
-  document.querySelectorAll('a[href="#win"]').forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); setMinimized(false); closeMenus(); }));
+  document.querySelectorAll('a[href="#win"]').forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); setMinimized(false); }));
   $("#tb-menu").addEventListener("click", () => {
     const open = !win.classList.contains("side-open");
     win.classList.toggle("side-open", open);
@@ -266,14 +235,18 @@
   // On a phone the window is one long column: start with the long panels folded.
   if (window.matchMedia("(max-width: 760px)").matches) ["#projects", "#skills", "#education"].forEach((s) => ($(s).open = false));
 
-  /* ---------- About dialog ---------- */
-  const about = $("#about-dialog");
+  /* ---------- Dialogs: About and the Recycle Bin ---------- */
   let lastFocus = null;
-  function openAbout() { closeMenus(); lastFocus = document.activeElement; about.hidden = false; about.querySelector(".dialog-actions .btn").focus(); }
-  function closeAbout() { if (about.hidden) return; about.hidden = true; lastFocus?.focus(); }
-  document.querySelectorAll("[data-about]").forEach((b) => b.addEventListener("click", openAbout));
-  about.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", closeAbout));
-  about.addEventListener("click", (e) => { if (e.target === about) closeAbout(); });
+  function openDialog(d) { lastFocus = document.activeElement; d.hidden = false; d.querySelector(".dialog-actions .btn").focus(); }
+  function closeDialogs() {
+    document.querySelectorAll(".dialog-backdrop:not([hidden])").forEach((d) => { d.hidden = true; lastFocus?.focus(); });
+  }
+  document.querySelectorAll("[data-about]").forEach((b) => b.addEventListener("click", () => openDialog($("#about-dialog"))));
+  $("#desk-bin").addEventListener("click", () => openDialog($("#bin-dialog")));
+  document.querySelectorAll(".dialog-backdrop").forEach((d) => {
+    d.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", closeDialogs));
+    d.addEventListener("click", (e) => { if (e.target === d) closeDialogs(); });
+  });
 
   /* ---------- Paper (printable, two-page) view ---------- */
   // Drawn icons rather than symbol characters, so the PDF looks the same
@@ -375,7 +348,6 @@
   /* ---------- View switching ---------- */
   function setView(view, push) {
     const paper = view === "paper";
-    closeMenus();
     $("#web").hidden = paper;
     $("#paper").hidden = !paper;
     if (paper) { fitText(); fitSheet(); }
