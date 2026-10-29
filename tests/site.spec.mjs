@@ -176,7 +176,7 @@ test("the write-up opens as a document window on the desktop", async ({ page, is
   test.skip(isMobile, "on a phone the link opens the page itself");
   await page.goto("/?lang=en");
   await page.locator(".desk-icon[data-doc]").click();
-  await expect(page.locator("#doc-page h1")).toHaveText("Fixing a flaky CI suite");
+  await expect(page.locator("#doc-page h1")).toHaveText("Fixing a Flaky CI Suite");
   await expect(page.locator("#doc-status")).toContainText("words");
   await expect(page.locator("#task-doc")).toBeVisible();
   await page.locator("#doc-win [data-doc-close]").click();
@@ -248,4 +248,23 @@ test("scrollbars are the classic Windows kind: 16px, with arrow buttons", async 
   // Chrome ignores the classic look if scrollbar-color is set, so it is only set for Firefox.
   const rootColor = await page.evaluate(() => getComputedStyle(document.documentElement).scrollbarColor);
   expect(rootColor).toBe("auto");
+});
+
+// EN labels and headings use Title Case ("Run All", "Copy Email"): every word
+// starts with a capital except short joining words, brands and file names.
+const SMALL = new Set(["a", "an", "the", "and", "but", "or", "nor", "for", "of", "to", "in", "on", "at", "by", "as", "via", "vs"]);
+const BRANDS = new Set(["appdoivo"]);
+function notTitleCase(text) {
+  return text.split(/\s+/).filter((w, i) => /^[a-z]/.test(w) && !/[.@/]/.test(w) && !BRANDS.has(w) && (i === 0 || !SMALL.has(w)));
+}
+test("EN buttons, links and headings are in Title Case", async ({ page }) => {
+  await page.goto("/?lang=en");
+  const texts = await page.locator("button:visible, summary:visible, h1:visible, h2:visible, h3:visible, .side a:visible, .btn:visible").allInnerTexts();
+  const bad = texts.map((t) => t.replace(/\s+/g, " ").trim()).filter((t) => t && notTitleCase(t).length);
+  expect(bad).toEqual([]);
+});
+test("the write-up headings are in Title Case", async ({ page }) => {
+  await page.goto("/writing/flaky-ci.html");
+  const texts = await page.locator("h1, h2").allInnerTexts();
+  expect(texts.filter((t) => notTitleCase(t).length)).toEqual([]);
 });

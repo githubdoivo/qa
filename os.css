@@ -394,3 +394,11 @@ a.company:hover { text-decoration: underline; }
 ::-webkit-scrollbar-button:horizontal:start:increment, ::-webkit-scrollbar-button:horizontal:end:decrement { display: none; }
 ::-webkit-scrollbar-corner { background: var(--face); }
 @-moz-document url-prefix() { * { scrollbar-color: var(--face) var(--face-2); } }
+
+/* Touch screens: give the small classic controls a finger-sized hit area
+   without changing how they look. */
+@media (pointer: coarse) {
+  .btn { min-height: 44px; }
+  .more, .checks-link { padding-block: 12px; }
+  .tb-menu { min-width: 44px; min-height: 40px; }
+}
