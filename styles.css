@@ -322,3 +322,11 @@ a { color: inherit; }
 
 #edu-grid { grid-template-columns: repeat(2, 1fr); }
 @media (max-width: 640px) { #edu-grid { grid-template-columns: 1fr; } }
+
+/* Touch screens: every control at least 44px tall */
+@media (pointer: coarse) {
+  .btn { min-height: 44px; }
+  .brand, .link-btn { min-height: 44px; }
+  .link-btn { display: inline-flex; align-items: center; }
+  .checks-link { display: inline-block; padding-block: 12px; min-height: 44px; }
+}

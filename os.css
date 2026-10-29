@@ -399,6 +399,6 @@ a.company:hover { text-decoration: underline; }
    without changing how they look. */
 @media (pointer: coarse) {
   .btn { min-height: 44px; }
-  .more, .checks-link { padding-block: 12px; }
+  .more, .checks-link { padding-block: 13px; min-height: 44px; }
   .tb-menu { min-width: 44px; min-height: 40px; }
 }

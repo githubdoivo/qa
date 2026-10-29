@@ -268,3 +268,13 @@ test("the write-up headings are in Title Case", async ({ page }) => {
   const texts = await page.locator("h1, h2").allInnerTexts();
   expect(texts.filter((t) => notTitleCase(t).length)).toEqual([]);
 });
+
+test("on a phone, buttons and links outside running text are at least 44px tall", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "phone only");
+  for (const [url, sel] of [["/", ".btn:visible, .more:visible, .checks-link:visible"], ["/writing/flaky-ci.html", ".btn, .link-btn, .brand, .checks-link"]]) {
+    await page.goto(url);
+    const small = await page.$$eval(sel, (els) => els.filter((e) => { const r = e.getBoundingClientRect(); return r.height > 0 && r.height < 43.5; })
+      .map((e) => `${e.className}: ${Math.round(e.getBoundingClientRect().height)}px`));
+    expect(small, url).toEqual([]);
+  }
+});
