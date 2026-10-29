@@ -96,7 +96,7 @@ for (const { lang, about, pdf, summary, headings } of LANGS) {
       // Keywords recruiters search for survive extraction intact.
       for (const k of ["Playwright", "Cucumber", "Rest Assured", "Kafka", "PostgreSQL", "Jenkins", "SonarQube", "ISTQB", "Coralogix", "Jira", "Xray"]) expect(text, `keyword ${k}`).toContain(k);
       // No phone number on the public CV.
-      expect(text).not.toMatch(/\+351|910 ?844/);
+      expect(text).not.toMatch(/\+351|\b9[1236]\d[\s.]?\d{3}[\s.]?\d{3}\b/);  // no Portuguese mobile number
     });
 
     test("the PDF embeds real text fonts, not Type3 drawings", async () => {
