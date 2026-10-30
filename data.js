@@ -84,7 +84,7 @@ window.CV = {
     {
       name: "appdoivo",
       href: "https://github.com/githubdoivo/festa-app",
-      demo: "https://demo.appdoivo.com",
+      demo: "https://festa-demo.appdoivo.com",
       tests: "https://github.com/githubdoivo/festa-app-e2e",
       story: "writing/flaky-ci.html",
       kind: "Side project · PWA used by ~50 guests at a real event",
