@@ -83,9 +83,9 @@ window.CV_PT = {
   projects: [
     {
       name: "appdoivo",
-      href: "https://github.com/githubdoivo/appdoivo",
+      href: "https://github.com/githubdoivo/festa-app",
       demo: "https://demo.appdoivo.com",
-      tests: "https://github.com/githubdoivo/appdoivo-e2e",
+      tests: "https://github.com/githubdoivo/festa-app-e2e",
       story: "writing/flaky-ci.html",
       kind: "Projeto pessoal · PWA usada por ~50 pessoas num evento real",
       blurb: "Uma app de festa construída e testada como um sistema de produção deve ser: primeiro os quality gates, depois as funcionalidades.",

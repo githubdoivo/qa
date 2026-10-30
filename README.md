@@ -1,6 +1,6 @@
 # qa.ivolopes.com
 
-[![CI](https://github.com/githubdoivo/qa/actions/workflows/ci.yml/badge.svg)](https://github.com/githubdoivo/qa/actions/workflows/ci.yml)
+[![CI](https://github.com/githubdoivo/qa.ivolopes.com/actions/workflows/ci.yml/badge.svg)](https://github.com/githubdoivo/qa.ivolopes.com/actions/workflows/ci.yml)
 
 Personal CV site: plain HTML/CSS/JS, hosted on GitHub Pages. The look is a
 classic Windows "Test Runner" app on an early-2000s desktop (`os.css`, icons in
